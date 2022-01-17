@@ -1,6 +1,6 @@
 """ Jag leker runt med klasser för att bli bekväm"""
 
-import matplotlib
+import sys
 
 class Shape:
     def __init__(self,color=None):
@@ -23,5 +23,6 @@ class Square(Shape):
     def area(self):
         return self.side**2
 
-s = Square(2,'Green')
+s = Square(sys.argv[1],str(sys.arg[2]))
+
 print(s.color)
