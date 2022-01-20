@@ -17,4 +17,5 @@ if __name__ == '__main__':
     for i in range(max_num_rabbits+1):
         r = i
         c = (legs-4*r)/2
-        print('antalet kaniner:',r,'antalet höns:',c)
+        if r+c == heads:
+            print('antalet kaniner:',r,'antalet höns:',c)
