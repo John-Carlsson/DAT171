@@ -1,14 +1,12 @@
-from matplotlib import collections  as mc
-from matplotlib import pyplot  as plt
+import matplotlib.pyplot as plt
 import numpy as np
-
-colors = ['r', 'g', 'b', 'c', 'y', 'k', 'm']
-data = np.random.randint(1, 10, size=(len(colors), 5, 2, 2))
-
-print(data)
-
-dist = [distance(m) for m in range(n,len(coord_list)) if distance(m) <= radius]    
+from scipy.sparse import *
+from scipy.spatial.ckdtree import *
+from matplotlib.collections import LineCollection
+import time
 
 
+listt = [(1,2),(2,3),(4,5),(6,7)]
 
-
+for a,b in enumerate(listt):
+    print(b)
