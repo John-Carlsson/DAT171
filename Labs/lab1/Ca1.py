@@ -1,27 +1,30 @@
 
 from re import S
+from matplotlib import scale
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.sparse import *
 from scipy.spatial.ckdtree import *
 from matplotlib.collections import LineCollection
 import time
+import math
 
 def read_coordinate_file(filename):
     lista = []
     not_allowed = '{}'
     r = 1
-    pi = np.pi
-    ln = np.log
-    tan = np.tan
+    
+    
+    
     with open(filename, 'r') as file:  # Comma separated numbers, {a,b}
         line = file.readline()
         while line:
             for char in not_allowed:
-                line = line.replace(char, '').strip()  # Remove the brackets and /n from the string
+                line = line.replace(char, '').strip()  # Remove the brackets , unwanted blankspace and /n from the string
             coord = line.split(',')
-            coord = [(float(coord[0])*pi*r/180), r*ln(tan((pi/4) + (pi*float(coord[1])/360)))]  # transform from string to float and a,b to x,y
-
+            coord = [(r*math.radians(float(coord[1]))), (r*math.log(math.tan(math.pi/4.0 + np.radians(float(coord[0]))/2.0)))] # transform from string to float and a,b to x,y
+            coord.reverse()
+            # transform from string to float and a,b to x,y
             lista.append(np.array(coord))
             line = file.readline()
 
@@ -32,20 +35,27 @@ def plot_points(coord_list,indices, path):
     segs = np.empty((len(indices),2,2))  # Create the empty array to allocate the linesegment, the dimensions are known
     col = ['grey'] * len(indices)  # Define color and linewidth for the most common type of line
     lw = [.09] * len(indices)
+    start = time.time()
     for i,c in enumerate(indices):
         segs[i, :, 0] = np.array([coord_list[c[0]][1],coord_list[c[1]][1]])    # Add the 'lines' to a line matrix with segments for each connection
         segs[i, :, 1] = np.array([coord_list[c[0]][0],coord_list[c[1]][0]])
         if c[0] in path and c[1] in path:
             col[i] = ('blue')
             lw[i] = (1)
+    end = time.time()
+    print('time to draw lines:',end-start)
     
+    # Add lines to plot
     lineseg = LineCollection(segs, linewidths = lw, color = col)
     ax.add_collection(lineseg)
 
-    for coord in coord_list:
-        coor = np.flip(coord) # Flip the matrix to make sure x is x and y is y so the map i correct
-        ax.scatter(*coor, s=5, color='red')
-   
+    # Add scatter
+    start = time.time()
+    coord_list = np.flip(coord_list)
+    ax.scatter(coord_list[:,0],coord_list[:,1], s=5, color='red')
+
+    end = time.time()
+    print('time to scatter:',end-start)
     ax.autoscale()
     plt.show()
    
@@ -75,11 +85,12 @@ def construct_fast_graph_connections(coord_list, radius):
     for i in range(len(points)):
         for el in points[i]:
             con.append(np.array([int(i),int(el)]))
-    i = 0
-    for n in points:
-        for nei in n:
-            dist.append(np.linalg.norm(coord_list[i] - coord_list[nei]))
-        i +=1
+            
+            
+
+    for i, nei in con:
+        dist.append(np.linalg.norm(coord_list[i] - coord_list[nei]))
+        
 
     return np.array(con), np.array(dist)
 
@@ -105,7 +116,7 @@ def find_shortest_path(graph, start_node, end_node):
 if __name__ == '__main__':
 
     """ Settings: """
-    FILENAME = 'HungaryCities.txt'
+    FILENAME = 'GermanyCities.txt'
     SPEED = 'fast'  # can be slow
 
 
@@ -119,7 +130,7 @@ if __name__ == '__main__':
         START_NODE = 311
         END_NODE = 702
     elif FILENAME == 'GermanyCities.txt':
-        RADIUS = 0.002
+        RADIUS = 0.0025
         START_NODE = 1573
         END_NODE = 10584
 
@@ -160,6 +171,7 @@ if __name__ == '__main__':
     """ Shortest path """
     start = time.time()
     path, dist = find_shortest_path(graph,START_NODE,END_NODE)
+    print(path)
     end = time.time()
     func4 = end-start   
     print(f'Time to find shortest path: {func4:3.5f} seconds.')

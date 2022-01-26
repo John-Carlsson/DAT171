@@ -5,8 +5,6 @@ from scipy.spatial.ckdtree import *
 from matplotlib.collections import LineCollection
 import time
 
+print(np.array(np.random.random((100,2))))
 
-listt = [(1,2),(2,3),(4,5),(6,7)]
 
-for a,b in enumerate(listt):
-    print(b)
