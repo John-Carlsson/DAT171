@@ -14,8 +14,7 @@ def read_coordinate_file(filename):
     r = 1
 
     with open(filename, 'r') as file:  # Comma separated numbers, '{a,b}'
-        line = file.readline()
-        while line:
+        for line in file:
             for char in not_allowed:
                 line = line.replace(char, '').strip()  # Remove the brackets , unwanted blankspace and /n from the string
             coord = line.split(',')
@@ -23,24 +22,27 @@ def read_coordinate_file(filename):
             coord.reverse()
             # transform from string to float and a,b to x,y
             lista.append(np.array(coord))
-            line = file.readline()
 
     return np.array(lista)  # Create  an array of arrays with coordinates
 
 
 def plot_points(coord_list, indices, path):
+
     fig, ax = plt.subplots()    
     segs = np.empty((len(indices), 2, 2))  # Create the empty array to allocate the linesegment, the dimensions are known
     col = ['grey'] * len(indices)  # Define color and linewidth for the most common type of line
     lw = [.3] * len(indices)
     start = time.time()
 
+    # [coord_list[path]]
+    # segs = coord_list[indices]
     for i, c in enumerate(indices):  # Add the 'lines' to a line matrix with segments for each connection
         segs[i, :, 0] = [coord_list[c[0]][1], coord_list[c[1]][1]]   # Cordinates for the two points
         segs[i, :, 1] = [coord_list[c[0]][0], coord_list[c[1]][0]]   # Cordinates for the two points
         if c[0] in path and c[1] in path:
-            col[i] = ('blue')
-            lw[i] = (1)
+            col[i] = 'blue'
+            lw[i] = 1
+
     end = time.time()
     print('time to draw lines:', end-start)
     
@@ -61,30 +63,28 @@ def plot_points(coord_list, indices, path):
 def construct_graph_connections(coord_list, radius):
     con = []
     distance = []
-    
-    for n in range(len(coord_list)):
-        for m in range(n, len(coord_list)):                         # Makes the graph 'undirected' to avoid redundancy
-            dist = np.linalg.norm(coord_list[n] - coord_list[m])   # Distance between two points
+
+    for n, a in enumerate(coord_list):
+        for m in range(n+1, len(coord_list)):                         # Makes the graph 'undirected' to avoid redundancy
+            dist = np.linalg.norm(a - coord_list[m])                  # Distance between two points
             if dist <= radius:
                 distance.append(dist)
-                con.append(np.array([int(n), int(m)]))
+                con.append(np.array([n, m]))
 
     return np.array(distance), np.array(con)
 
 
 def construct_fast_graph_connections(coord_list, radius):
     tree = cKDTree(coord_list)
-    points = []
     distance = []
     con = []
-    for coord in coord_list:
-        points.append(tree.query_ball_point(coord,r=radius))  #  Make an adjacency list where the first indax is node and the second
-                                                              #  is a list with neighbours within range
-   
-    for i in range(len(points)): 
-        for el in points[i]:
+    points = (tree.query_ball_point(coord_list, r=radius))   #  Make an adjacency list where the first index is node and the second
+                                                             #  is a list with neighbours within range
+
+    for i, point in enumerate(points):
+        for el in point:
             if el >= i:                                       #  Make a list of connections, since the graph is "undirected" there will
-                con.append(np.array([int(i), int(el)]))       #  only one "road" between nodes since you can go both ways on the same road
+                con.append(np.array([i, el]))                 #  only be one "road" between nodes since you can go both ways on the same road
 
     for i, nei in con:
         distance.append(np.linalg.norm(coord_list[i] - coord_list[nei]))  # Calculate distance between nodes within range
@@ -115,7 +115,7 @@ def find_shortest_path(graph, start_node, end_node):
 if __name__ == '__main__':
 
     """ Settings: """
-    SCENARIO = '3'  # '1' ,'2' or '3' for sample, hungary or germany respectively
+    SCENARIO = '2'  # '1' ,'2' or '3' for sample, hungary or germany respectively
     SPEED = 'fast'  # can be 'slow' or 'fast'
 
     if SCENARIO == '1':
