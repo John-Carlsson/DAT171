@@ -1,6 +1,4 @@
 
-from re import S
-from matplotlib import scale
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.sparse import *
@@ -36,9 +34,9 @@ def plot_points(coord_list,indices, path):
     col = ['grey'] * len(indices)  # Define color and linewidth for the most common type of line
     lw = [.09] * len(indices)
     start = time.time()
-    for i,c in enumerate(indices):
-        segs[i, :, 0] = np.array([coord_list[c[0]][1],coord_list[c[1]][1]])    # Add the 'lines' to a line matrix with segments for each connection
-        segs[i, :, 1] = np.array([coord_list[c[0]][0],coord_list[c[1]][0]])
+    for i,c in enumerate(indices):  # Add the 'lines' to a line matrix with segments for each connection
+        segs[i, :, 0] = [coord_list[c[0]][1],coord_list[c[1]][1]]   # Cordinates for the two points  
+        segs[i, :, 1] = [coord_list[c[0]][0],coord_list[c[1]][0]]   # Cordinates for the two points
         if c[0] in path and c[1] in path:
             col[i] = ('blue')
             lw[i] = (1)
@@ -60,18 +58,18 @@ def plot_points(coord_list,indices, path):
     plt.show()
    
 def construct_graph_connections(coord_list, radius):
-    points = []
+    con = []
     dist = []
     
     for n in range(len(coord_list)):
-        for m in range(n,len(coord_list)):
+        for m in range(n,len(coord_list)):                         # Makes the graph 'undirected' to avoid redundancy
             avst = np.linalg.norm(coord_list[n] - coord_list[m])   # Distance between two points
             if avst <= radius:
                 dist.append(avst)
-                points.append(np.array([int(n), int(m)]))
+                con.append(np.array([int(n), int(m)]))
+    print(len(con))
 
-
-    return np.array(dist), np.array(points)
+    return np.array(dist), np.array(con)
 
 def construct_fast_graph_connections(coord_list, radius):
     tree = cKDTree(coord_list)
@@ -80,16 +78,16 @@ def construct_fast_graph_connections(coord_list, radius):
     con = []
     i = 0
     for coord in coord_list:
-        points.append(tree.query_ball_point(coord,r=radius))
-    
-    for i in range(len(points)):
+        points.append(tree.query_ball_point(coord,r=radius))  #  Make an adjacency list where the first indax is node and the second
+                                                              #  is a list with neighbours within range
+   
+    for i in range(len(points)): 
         for el in points[i]:
-            con.append(np.array([int(i),int(el)]))
-            
-            
+            if el >= i:                                       #  Make a list of connections, since the graph is "undirected" there will 
+                con.append(np.array([int(i),int(el)]))        #  only one "road" between nodes since you can go both ways on the same road
 
     for i, nei in con:
-        dist.append(np.linalg.norm(coord_list[i] - coord_list[nei]))
+        dist.append(np.linalg.norm(coord_list[i] - coord_list[nei]))  # Calculate distance between nodes within range
         
 
     return np.array(con), np.array(dist)
@@ -116,20 +114,23 @@ def find_shortest_path(graph, start_node, end_node):
 if __name__ == '__main__':
 
     """ Settings: """
-    FILENAME = 'GermanyCities.txt'
-    SPEED = 'fast'  # can be slow
+    SCENARIO = '2'  # '1' ,'2' or '3' for sample, hungary or germany respectively
+    SPEED = 'fast'  # can be 'slow' or 'fast'
 
 
 
-    if FILENAME == 'SampleCoordinates.txt':
+    if SCENARIO =='1':
+        FILENAME = 'SampleCoordinates.txt'
         RADIUS = 0.08
         START_NODE = 0
         END_NODE = 5
-    elif FILENAME == 'HungaryCities.txt':
+    elif SCENARIO == '2':
+        FILENAME = 'HungaryCities.txt'
         RADIUS = 0.005
         START_NODE = 311
         END_NODE = 702
-    elif FILENAME == 'GermanyCities.txt':
+    elif SCENARIO == '3':
+        FILENAME = 'GermanyCities.txt'
         RADIUS = 0.0025
         START_NODE = 1573
         END_NODE = 10584
@@ -175,7 +176,7 @@ if __name__ == '__main__':
     end = time.time()
     func4 = end-start   
     print(f'Time to find shortest path: {func4:3.5f} seconds.')
-    print(f'The shortest path from {START_NODE} to {END_NODE} is {path}')
+    print(f'The shortest path from {START_NODE} to {END_NODE} is:\n {path}')
     print(f'The total distance is {dist:3.5f}')
 
     """ Plot """
