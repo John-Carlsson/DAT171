@@ -56,28 +56,28 @@ def plot_points(coord_list, indices, path):
     print('time to scatter:', end-start)
     ax.autoscale()
     plt.show()
+
    
 def construct_graph_connections(coord_list, radius):
     con = []
-    dist = []
+    distance = []
     
     for n in range(len(coord_list)):
         for m in range(n,len(coord_list)):                         # Makes the graph 'undirected' to avoid redundancy
-            avst = np.linalg.norm(coord_list[n] - coord_list[m])   # Distance between two points
-            if avst <= radius:
-                dist.append(avst)
+            dist = np.linalg.norm(coord_list[n] - coord_list[m])   # Distance between two points
+            if dist <= radius:
+                distance.append(dist)
                 con.append(np.array([int(n), int(m)]))
     print(len(con))
 
-    return np.array(dist), np.array(con)
+    return np.array(distance), np.array(con)
 
 
 def construct_fast_graph_connections(coord_list, radius):
     tree = cKDTree(coord_list)
     points = []
-    dist = []
+    distance = []
     con = []
-    i = 0
     for coord in coord_list:
         points.append(tree.query_ball_point(coord,r=radius))  #  Make an adjacency list where the first indax is node and the second
                                                               #  is a list with neighbours within range
@@ -85,13 +85,13 @@ def construct_fast_graph_connections(coord_list, radius):
     for i in range(len(points)): 
         for el in points[i]:
             if el >= i:                                       #  Make a list of connections, since the graph is "undirected" there will
-                con.append(np.array([int(i), int(el)]))        #  only one "road" between nodes since you can go both ways on the same road
+                con.append(np.array([int(i), int(el)]))       #  only one "road" between nodes since you can go both ways on the same road
 
     for i, nei in con:
-        dist.append(np.linalg.norm(coord_list[i] - coord_list[nei]))  # Calculate distance between nodes within range
+        distance.append(np.linalg.norm(coord_list[i] - coord_list[nei]))  # Calculate distance between nodes within range
         
 
-    return np.array(con), np.array(dist)
+    return np.array(con), np.array(distance)
 
 
 def construct_graph(indices, distance):
