@@ -63,12 +63,11 @@ def construct_graph_connections(coord_list, radius):
     distance = []
     
     for n in range(len(coord_list)):
-        for m in range(n,len(coord_list)):                         # Makes the graph 'undirected' to avoid redundancy
+        for m in range(n, len(coord_list)):                         # Makes the graph 'undirected' to avoid redundancy
             dist = np.linalg.norm(coord_list[n] - coord_list[m])   # Distance between two points
             if dist <= radius:
                 distance.append(dist)
                 con.append(np.array([int(n), int(m)]))
-    print(len(con))
 
     return np.array(distance), np.array(con)
 
