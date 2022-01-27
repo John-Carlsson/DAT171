@@ -7,20 +7,19 @@ from matplotlib.collections import LineCollection
 import time
 import math
 
+
 def read_coordinate_file(filename):
     lista = []
     not_allowed = '{}'
     r = 1
-    
-    
-    
-    with open(filename, 'r') as file:  # Comma separated numbers, {a,b}
+
+    with open(filename, 'r') as file:  # Comma separated numbers, '{a,b}'
         line = file.readline()
         while line:
             for char in not_allowed:
                 line = line.replace(char, '').strip()  # Remove the brackets , unwanted blankspace and /n from the string
             coord = line.split(',')
-            coord = [(r*math.radians(float(coord[1]))), (r*math.log(math.tan(math.pi/4.0 + np.radians(float(coord[0]))/2.0)))] # transform from string to float and a,b to x,y
+            coord = [(r*math.radians(float(coord[1]))), (r*math.log(math.tan(math.pi/4.0 + np.radians(float(coord[0]))/2.0)))]  # transform from string to float and a,b to x,y
             coord.reverse()
             # transform from string to float and a,b to x,y
             lista.append(np.array(coord))
@@ -28,20 +27,22 @@ def read_coordinate_file(filename):
 
     return np.array(lista)  # Create  an array of arrays with coordinates
 
-def plot_points(coord_list,indices, path):
+
+def plot_points(coord_list, indices, path):
     fig, ax = plt.subplots()    
-    segs = np.empty((len(indices),2,2))  # Create the empty array to allocate the linesegment, the dimensions are known
+    segs = np.empty((len(indices), 2, 2))  # Create the empty array to allocate the linesegment, the dimensions are known
     col = ['grey'] * len(indices)  # Define color and linewidth for the most common type of line
-    lw = [.09] * len(indices)
+    lw = [.3] * len(indices)
     start = time.time()
-    for i,c in enumerate(indices):  # Add the 'lines' to a line matrix with segments for each connection
-        segs[i, :, 0] = [coord_list[c[0]][1],coord_list[c[1]][1]]   # Cordinates for the two points  
-        segs[i, :, 1] = [coord_list[c[0]][0],coord_list[c[1]][0]]   # Cordinates for the two points
+
+    for i, c in enumerate(indices):  # Add the 'lines' to a line matrix with segments for each connection
+        segs[i, :, 0] = [coord_list[c[0]][1], coord_list[c[1]][1]]   # Cordinates for the two points
+        segs[i, :, 1] = [coord_list[c[0]][0], coord_list[c[1]][0]]   # Cordinates for the two points
         if c[0] in path and c[1] in path:
             col[i] = ('blue')
             lw[i] = (1)
     end = time.time()
-    print('time to draw lines:',end-start)
+    print('time to draw lines:', end-start)
     
     # Add lines to plot
     lineseg = LineCollection(segs, linewidths = lw, color = col)
@@ -51,9 +52,8 @@ def plot_points(coord_list,indices, path):
     start = time.time()
     coord_list = np.flip(coord_list)
     ax.scatter(coord_list[:,0],coord_list[:,1], s=5, color='red')
-
     end = time.time()
-    print('time to scatter:',end-start)
+    print('time to scatter:', end-start)
     ax.autoscale()
     plt.show()
    
@@ -71,6 +71,7 @@ def construct_graph_connections(coord_list, radius):
 
     return np.array(dist), np.array(con)
 
+
 def construct_fast_graph_connections(coord_list, radius):
     tree = cKDTree(coord_list)
     points = []
@@ -83,8 +84,8 @@ def construct_fast_graph_connections(coord_list, radius):
    
     for i in range(len(points)): 
         for el in points[i]:
-            if el >= i:                                       #  Make a list of connections, since the graph is "undirected" there will 
-                con.append(np.array([int(i),int(el)]))        #  only one "road" between nodes since you can go both ways on the same road
+            if el >= i:                                       #  Make a list of connections, since the graph is "undirected" there will
+                con.append(np.array([int(i), int(el)]))        #  only one "road" between nodes since you can go both ways on the same road
 
     for i, nei in con:
         dist.append(np.linalg.norm(coord_list[i] - coord_list[nei]))  # Calculate distance between nodes within range
@@ -92,11 +93,13 @@ def construct_fast_graph_connections(coord_list, radius):
 
     return np.array(con), np.array(dist)
 
+
 def construct_graph(indices, distance):
     indices = indices.T
     sparse = csr_matrix((distance, indices))
 
     return sparse
+
 
 def find_shortest_path(graph, start_node, end_node):
     cs, pred = csgraph.shortest_path(graph, indices=start_node, directed = False, return_predecessors=True)
@@ -108,18 +111,15 @@ def find_shortest_path(graph, start_node, end_node):
         current = pred[current]
     path.reverse()
     return path, dist
-    
 
 
 if __name__ == '__main__':
 
     """ Settings: """
-    SCENARIO = '2'  # '1' ,'2' or '3' for sample, hungary or germany respectively
+    SCENARIO = '3'  # '1' ,'2' or '3' for sample, hungary or germany respectively
     SPEED = 'fast'  # can be 'slow' or 'fast'
 
-
-
-    if SCENARIO =='1':
+    if SCENARIO == '1':
         FILENAME = 'SampleCoordinates.txt'
         RADIUS = 0.08
         START_NODE = 0
@@ -135,15 +135,15 @@ if __name__ == '__main__':
         START_NODE = 1573
         END_NODE = 10584
 
-
     """ Read coordinates """
+    print(f'Filnamn: {FILENAME}')
     start = time.time()
     coordinates = read_coordinate_file(FILENAME)
     end = time.time()
     func1 = end-start
     print(f'Time to read and convert coordinates: {func1:3.5f} seconds.')
 
-
+    """ Graph connections """
     if SPEED.lower() == 'slow':
         """ Graph connections slow """
         start = time.time()
@@ -162,7 +162,7 @@ if __name__ == '__main__':
         func2 = 0
         print(f'Time to construct fast graph connections: {func22:3.5f} seconds.')
 
-    """ Conatruct graph """
+    """ Construct graph """
     start = time.time()
     graph = construct_graph(connections, dist)
     end = time.time()
@@ -171,8 +171,7 @@ if __name__ == '__main__':
 
     """ Shortest path """
     start = time.time()
-    path, dist = find_shortest_path(graph,START_NODE,END_NODE)
-    print(path)
+    path, dist = find_shortest_path(graph, START_NODE, END_NODE)
     end = time.time()
     func4 = end-start   
     print(f'Time to find shortest path: {func4:3.5f} seconds.')
