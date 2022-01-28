@@ -1,4 +1,4 @@
-
+""" Dat 171, Computer Assignment 1, written by John Carlsson, spring of 2022 """
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.sparse import *
@@ -115,7 +115,7 @@ def find_shortest_path(graph, start_node, end_node):
 if __name__ == '__main__':
 
     """ Settings: """
-    SCENARIO = '2'  # '1' ,'2' or '3' for sample, hungary or germany respectively
+    SCENARIO = '3'  # '1' ,'2' or '3' for sample, hungary or germany respectively
     SPEED = 'fast'  # can be 'slow' or 'fast'
 
     if SCENARIO == '1':

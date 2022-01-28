@@ -1,0 +1,379 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to CA2’s documentation! &#8212; CA2 2021-02-22 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-ca2-s-documentation">
+<h1>Welcome to CA2’s documentation!<a class="headerlink" href="#welcome-to-ca2-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-cardlib"></span><dl class="py class">
+<dt id="cardlib.AceCard">
+<em class="property">class </em><code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">AceCard</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">suit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.AceCard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cardlib.PlayingCards" title="cardlib.PlayingCards"><code class="xref py py-class docutils literal notranslate"><span class="pre">cardlib.PlayingCards</span></code></a></p>
+<p>A subclass to PlayingCards
+Returns class JackCard with value (14) and suits</p>
+<dl class="py method">
+<dt id="cardlib.AceCard.get_suit">
+<code class="sig-name descname">get_suit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.AceCard.get_suit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns suit of card</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cardlib.AceCard.get_value">
+<code class="sig-name descname">get_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.AceCard.get_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns value of card</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="cardlib.Hand">
+<em class="property">class </em><code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">Hand</code><a class="headerlink" href="#cardlib.Hand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Players hand represented as the class Hand</p>
+<dl class="py method">
+<dt id="cardlib.Hand.add_card">
+<code class="sig-name descname">add_card</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">card</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.Hand.add_card" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for adding cards to hand</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cardlib.Hand.best_poker_hand">
+<code class="sig-name descname">best_poker_hand</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cards</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.Hand.best_poker_hand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for determining the best poker hand of cards in the hand</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cardlib.Hand.drop_cards">
+<code class="sig-name descname">drop_cards</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.Hand.drop_cards" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for dropping cards from hand based on index list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cardlib.Hand.sort">
+<code class="sig-name descname">sort</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.Hand.sort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for sorting cards in hand</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="cardlib.HandType">
+<em class="property">class </em><code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">HandType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.HandType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.IntEnum</span></code></p>
+<p>The rankings of poker hands</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="cardlib.JackCard">
+<em class="property">class </em><code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">JackCard</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">suit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.JackCard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cardlib.PlayingCards" title="cardlib.PlayingCards"><code class="xref py py-class docutils literal notranslate"><span class="pre">cardlib.PlayingCards</span></code></a></p>
+<p>A subclass to PlayingCards
+Returns class JackCard with value (11) and suits</p>
+<dl class="py method">
+<dt id="cardlib.JackCard.get_suit">
+<code class="sig-name descname">get_suit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.JackCard.get_suit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns suit of card</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cardlib.JackCard.get_value">
+<code class="sig-name descname">get_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.JackCard.get_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns value of card</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="cardlib.KingCard">
+<em class="property">class </em><code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">KingCard</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">suit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.KingCard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cardlib.PlayingCards" title="cardlib.PlayingCards"><code class="xref py py-class docutils literal notranslate"><span class="pre">cardlib.PlayingCards</span></code></a></p>
+<p>A subclass to PlayingCards
+Returns class JackCard with value (13) and suits</p>
+<dl class="py method">
+<dt id="cardlib.KingCard.get_suit">
+<code class="sig-name descname">get_suit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.KingCard.get_suit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns suit of card</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cardlib.KingCard.get_value">
+<code class="sig-name descname">get_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.KingCard.get_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns value of card</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="cardlib.NumberedCard">
+<em class="property">class </em><code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">NumberedCard</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">suit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.NumberedCard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cardlib.PlayingCards" title="cardlib.PlayingCards"><code class="xref py py-class docutils literal notranslate"><span class="pre">cardlib.PlayingCards</span></code></a></p>
+<p>A subclass to PlayingCards
+Returns class NumberedCard with values (2-10) and suits</p>
+<dl class="py method">
+<dt id="cardlib.NumberedCard.get_suit">
+<code class="sig-name descname">get_suit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.NumberedCard.get_suit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns suit of card</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cardlib.NumberedCard.get_value">
+<code class="sig-name descname">get_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.NumberedCard.get_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns value of card</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="cardlib.PlayingCards">
+<em class="property">class </em><code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">PlayingCards</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">suit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.PlayingCards" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for the playing cards</p>
+<dl class="py method">
+<dt id="cardlib.PlayingCards.get_suit">
+<em class="property">abstract </em><code class="sig-name descname">get_suit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.PlayingCards.get_suit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns suit of card</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cardlib.PlayingCards.get_value">
+<em class="property">abstract </em><code class="sig-name descname">get_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.PlayingCards.get_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns value of card</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="cardlib.PokerHand">
+<em class="property">class </em><code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">PokerHand</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cards</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.PokerHand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class PokerHand that contains functions for determining the best poker hand</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="cardlib.QueenCard">
+<em class="property">class </em><code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">QueenCard</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">suit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.QueenCard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cardlib.PlayingCards" title="cardlib.PlayingCards"><code class="xref py py-class docutils literal notranslate"><span class="pre">cardlib.PlayingCards</span></code></a></p>
+<p>A subclass to PlayingCards
+Returns class JackCard with value (12) and suits</p>
+<dl class="py method">
+<dt id="cardlib.QueenCard.get_suit">
+<code class="sig-name descname">get_suit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.QueenCard.get_suit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns suit of card</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cardlib.QueenCard.get_value">
+<code class="sig-name descname">get_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.QueenCard.get_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns value of card</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="cardlib.StandardDeck">
+<em class="property">class </em><code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">StandardDeck</code><a class="headerlink" href="#cardlib.StandardDeck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class StandardDeck that contains 52 card</p>
+<dl class="py method">
+<dt id="cardlib.StandardDeck.construct">
+<code class="sig-name descname">construct</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.StandardDeck.construct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructing the deck with loop</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cardlib.StandardDeck.draw">
+<code class="sig-name descname">draw</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.StandardDeck.draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws the the top card and eliminates it from deck</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cardlib.StandardDeck.shuffle">
+<code class="sig-name descname">shuffle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.StandardDeck.shuffle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shuffles the cards in the deck</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="cardlib.Suit">
+<em class="property">class </em><code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">Suit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.Suit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.IntEnum</span></code></p>
+<p>Class that contains all four suits</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="cardlib.check_flush">
+<code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">check_flush</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cards</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.check_flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for finding flush of cards in the list of cards</p>
+<p>: param cards: list of cards</p>
+<p>: return: suit of the flush</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="cardlib.check_four_of_a_kind">
+<code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">check_four_of_a_kind</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cards</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.check_four_of_a_kind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for finding four of a kind of cards in the list of cards</p>
+<p>: param cards: list of cards</p>
+<p>: return: value from the four of a kind</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="cardlib.check_full_house">
+<code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">check_full_house</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cards</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.check_full_house" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for finding full house of cards in the list of cards</p>
+<p>: param cards: list of cards</p>
+<p>: return: tuple of values from the twos and threes</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="cardlib.check_high_card">
+<code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">check_high_card</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cards</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.check_high_card" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for finding the highest card in the list of cards</p>
+<p>: param cards: list of cards</p>
+<p>: return: value of highest card</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="cardlib.check_pair">
+<code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">check_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cards</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.check_pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for finding pair of cards in the list of cards</p>
+<p>: param cards: list of cards</p>
+<p>: return: card value of the pair</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="cardlib.check_straight">
+<code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">check_straight</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cards</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.check_straight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for finding straight of cards in the list of cards</p>
+<p>: param cards: list of cards</p>
+<p>: return: highest card value of the straight</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="cardlib.check_straight_flush">
+<code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">check_straight_flush</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cards</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.check_straight_flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for finding straight flush of cards in the list of cards</p>
+<p>: param cards: list of cards</p>
+<p>: return: value of top card</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="cardlib.check_three_of_a_kind">
+<code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">check_three_of_a_kind</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cards</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.check_three_of_a_kind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for finding three of a kind of cards in the list of cards</p>
+<p>: param cards: list of cards</p>
+<p>: return: card value of three of a kind</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="cardlib.check_two_pairs">
+<code class="sig-prename descclassname">cardlib.</code><code class="sig-name descname">check_two_pairs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cards</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.check_two_pairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for finding two pairs of cards in the list of cards</p>
+<p>: param cards: list of cards</p>
+<p>: return: tuple of card values of the pairs</p>
+</dd></dl>
+
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">CA2</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Derin Ismail & Haik-David Avetian.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
