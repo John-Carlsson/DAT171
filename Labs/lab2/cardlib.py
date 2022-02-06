@@ -102,7 +102,7 @@ class Hand():
 
 class StandardDeck():
     """ Create a standard deck of 52 cards """
-    def __init__(self) -> None:
+    def __init__(self):
         pass
 
     """ Shuffle the deck """
