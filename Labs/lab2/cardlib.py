@@ -152,13 +152,5 @@ if __name__ == '__main__':
     texas = StandardDeck()
     texas.shuffle()
     
-    # n = 50
-    # texas.draw(n)
-    # print(f'{n} kort dragna')
-    # for card in texas.table:
-    #     print(card.get_suit().name, card.get_value())
-    # for card in texas.deck:
-    #     print(card.get_suit().name, card.get_value())
-
     p1 = Hand()
     
