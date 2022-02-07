@@ -2,6 +2,8 @@
 
 from abc import ABCMeta, abstractmethod
 import enum
+from ftplib import parse150
+from random import shuffle
 
 class PlayingCard(metaclass=ABCMeta):
     """ Abstract base class for the playing cards"""
@@ -42,11 +44,22 @@ class NumberedCard(PlayingCard):
         self.value = value
     
     def get_value(self):
-        return self.suit
+        return self.value
     
     def get_suit(self):
         return self.suit
     
+class AceCard(PlayingCard):
+    def __init__(self, suit):
+        super().__init__(suit)
+    
+    def get_value(self):
+        " Fixa så att det kan va 1 eller 14"
+        return 1
+    
+    def get_suit(self):
+        return self.suit
+
 class KingCard(PlayingCard):
     def __init__(self, suit):
         super().__init__(suit)
@@ -79,41 +92,73 @@ class JackCard(PlayingCard):
         return self.suit
 
 
-class Hand(): 
-    def __init__(self) -> None:
-        
-        pass
-
-    """ Add a card to hand """
-    def add(self):
-        pass
-    
-    """ Drop one or several cards """
-    def drop(self, index):
-        pass
-    
-    """ Sort the hand from smallest to largest ??"""
-    def sort(self):
-        pass
-    """ Compute the best possible hand with your current cards """
-    def best_poker_hand(self):
-        pass
-
-
-class StandardDeck():
-    """ Create a standard deck of 52 cards """
+class Hand: 
     def __init__(self):
+        self.cards = []
+        
+
+    """ Add cards to hand """
+    def add_card(self, card):
+        self.cards.append(card)
+        
+    
+    """ Drop one or several cards by index """
+    def drop_cards(self, index):
+        for i in index:
+            del self.cards[i]
+    
+    """ Sort the hand from smallest to largest ?? """
+    def sort(self):
+        self.cards.sort()
+
+    """ Compute the best possible hand with your current cards """
+    def best_poker_hand(self, cards = []):
         pass
+
+class StandardDeck:
+    """ A standard deck of 52 cards """
+    def __init__(self):
+        self.deck = []
+       
+        for suit in Suit:
+            self.deck.append(AceCard(suit))
+            for i in range(2,11):
+                self.deck.append(NumberedCard(i,suit))
+            self.deck.append(JackCard(suit))
+            self.deck.append(QueenCard(suit))
+            self.deck.append(KingCard(suit))
+       
 
     """ Shuffle the deck """
     def shuffle(self):
-        pass
-    """ Draw a number of cards from the top of the deck"""
-    def draw(self, number):
-        pass
+        shuffle(self.deck)
+    
+    """ Draw the top card from the deck"""
+    def draw(self):
+        drawn = self.deck[0]
+        self.deck.remove(self.deck[0])
 
+        return drawn
+        
 
 class PokerHand:
     """ A class for the different kind of pokerhands there are, there are methods for checking if a hand has a kind of hand """
     def __init__(self):
         pass
+
+
+if __name__ == '__main__':
+
+    texas = StandardDeck()
+    texas.shuffle()
+    
+    # n = 50
+    # texas.draw(n)
+    # print(f'{n} kort dragna')
+    # for card in texas.table:
+    #     print(card.get_suit().name, card.get_value())
+    # for card in texas.deck:
+    #     print(card.get_suit().name, card.get_value())
+
+    p1 = Hand()
+    

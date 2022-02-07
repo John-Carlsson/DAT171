@@ -13,6 +13,7 @@ def test_cards():
 
     assert h5 < sk
     assert h5 == h5
+    print("first test done")
 
 
 # This test assumes you call your shuffle method "shuffle" and the method to draw a card "draw"
@@ -27,7 +28,7 @@ def test_deck():
     c3 = d2.draw()
     c4 = d2.draw()
     assert not ((c3, c4) == (c1, c2))
-
+    print("second test done")
 
 # This test builds on the assumptions above and assumes you store the cards in the hand in the list "cards",
 # and that your sorting method is called "sort" and sorts in increasing order
@@ -52,7 +53,7 @@ def test_hand():
     assert len(h.cards) == 2
     assert h.cards[0] == cards[2]
     assert h.cards[1] == cards[4]
-
+    print("third test done")
 
 def test_pokerhands():
     h1 = Hand()
@@ -89,3 +90,5 @@ def test_pokerhands():
     # assert ph5 == PokerHand( <insert your handtype for a Full House and data here> )
 
 test_cards()
+test_deck()
+test_hand()
