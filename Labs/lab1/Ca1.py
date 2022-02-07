@@ -1,4 +1,5 @@
 """ Dat 171, Computer Assignment 1, written by John Carlsson, spring of 2022 """
+
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.sparse import *
@@ -83,8 +84,8 @@ def construct_fast_graph_connections(coord_list, radius):
 
     for i, point in enumerate(points):
         for el in point:
-            if el >= i:                                       #  Make a list of connections, since the graph is "undirected" there will
-                con.append(np.array([i, el]))                 #  only be one "road" between nodes since you can go both ways on the same road
+            if el >= i:                                      #  Make a list of connections, since the graph is "undirected" there will
+                con.append(np.array([i, el]))                #  only be one "road" between nodes since you can go both ways on the same road
 
     for i, nei in con:
         distance.append(np.linalg.norm(coord_list[i] - coord_list[nei]))  # Calculate distance between nodes within range
@@ -93,9 +94,10 @@ def construct_fast_graph_connections(coord_list, radius):
     return np.array(con), np.array(distance)
 
 
-def construct_graph(indices, distance):
+def construct_graph(indices, distance,N):
+    
     indices = indices.T
-    sparse = csr_matrix((distance, indices))
+    sparse = csr_matrix((distance, indices),shape=(N,N))
 
     return sparse
 
@@ -115,7 +117,7 @@ def find_shortest_path(graph, start_node, end_node):
 if __name__ == '__main__':
 
     """ Settings: """
-    SCENARIO = '1'  # '1' ,'2' or '3' for sample, hungary or germany respectively
+    SCENARIO = '2'  # '1' ,'2' or '3' for sample, hungary or germany respectively
     SPEED = 'fast'  # can be 'slow' or 'fast'
 
     if SCENARIO == '1':
@@ -163,7 +165,8 @@ if __name__ == '__main__':
 
     """ Construct graph """
     start = time.time()
-    graph = construct_graph(connections, dist)
+    N = len(dist)
+    graph = construct_graph(connections, dist, N)
     end = time.time()
     func3 = end-start   
     print(f'Time to construct graph: {func3:3.5f} seconds.')
