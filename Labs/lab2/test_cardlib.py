@@ -13,6 +13,9 @@ def test_cards():
 
     assert h5 < sk
     assert h5 == h5
+
+    with pytest.raises(TypeError):
+        pc = PlayingCard(Suit.Clubs)
     print("first test done")
 
 

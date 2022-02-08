@@ -1,1 +1,1 @@
-KingCard
+print

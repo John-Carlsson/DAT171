@@ -64,9 +64,3 @@ class StandardDeck:
     def draw(self, number):
         pass
 
-    
-    
-
-texas = StandardDeck()
-for card in texas.deck:
-    print(card.get_value())

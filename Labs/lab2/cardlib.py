@@ -2,24 +2,26 @@
 
 from abc import ABCMeta, abstractmethod
 import enum
-from ftplib import parse150
+from math import fabs
+from multiprocessing.sharedctypes import Value
 from random import shuffle
+import numpy as np
+
 
 class PlayingCard(metaclass=ABCMeta):
     """ Abstract base class for the playing cards"""
-    def __init__(self,suit) -> None:
+    def __init__(self,suit):
         self.suit = suit
 
     """ Overloading  the equal operator"""
     def __eq__(self, other):
-        if self.get_value() == other.get_value(): return True
+        if (self.get_suit(),self.get_value()) == (other.get_suit(),other.get_value()): return True
         else: return False
         
     """ Overloading  the less than operator"""
     def __lt__(self, other):
         if self.get_value() < other.get_value(): return True
         else: return False
-
 
 
     @abstractmethod
@@ -30,12 +32,11 @@ class PlayingCard(metaclass=ABCMeta):
     def get_suit(self):
         pass
 
-
 class Suit(enum.IntEnum):
-    Clubs = 0
-    Diamonds = 1
-    Hearts = 2
-    Spades = 3
+    Hearts = 0
+    Spades = 1
+    Clubs = 2
+    Diamonds = 3
 
 class NumberedCard(PlayingCard):
     
@@ -55,7 +56,7 @@ class AceCard(PlayingCard):
     
     def get_value(self):
         " Fixa så att det kan va 1 eller 14"
-        return 1
+        return 14
     
     def get_suit(self):
         return self.suit
@@ -91,7 +92,6 @@ class JackCard(PlayingCard):
     def get_suit(self):
         return self.suit
 
-
 class Hand: 
     def __init__(self):
         self.cards = []
@@ -104,8 +104,12 @@ class Hand:
     
     """ Drop one or several cards by index """
     def drop_cards(self, index):
+        index.sort()
+        n = 0
         for i in index:
+            i -= n
             del self.cards[i]
+            n += 1
     
     """ Sort the hand from smallest to largest ?? """
     def sort(self):
@@ -119,7 +123,6 @@ class StandardDeck:
     """ A standard deck of 52 cards """
     def __init__(self):
         self.deck = []
-       
         for suit in Suit:
             self.deck.append(AceCard(suit))
             for i in range(2,11):
@@ -135,22 +138,106 @@ class StandardDeck:
     
     """ Draw the top card from the deck"""
     def draw(self):
-        drawn = self.deck[0]
-        self.deck.remove(self.deck[0])
-
-        return drawn
+        return self.deck.pop()
         
+    
+def check_diff(cards = []):
+    for i in range(0,len(cards)-1):
+        if not np.diff((cards[i].get_value(),cards[i+1].get_value())) == 1: return False
+    return True
 
-class PokerHand:
-    """ A class for the different kind of pokerhands there are, there are methods for checking if a hand has a kind of hand """
-    def __init__(self):
-        pass
+def check_suit(cards = []):
+    for i in range(0,len(cards)-1):
+        if not cards[i].get_suit() == cards[i+1].get_suit(): return False
+    return True
 
 
+
+def royal_flush(cards = []):
+    cards.sort(key = lambda x: x.get_value())
+    print(cards[-1].get_value())
+    if cards[-1].get_value() == 14:
+        if check_diff(cards):
+            if check_suit(cards):
+                return HandType.royal_flush
+    return False
+
+def straight_flush(cards = []):
+    cards.sort(key = lambda x: x.get_value())
+    if check_diff(cards):
+        if check_suit(cards):
+            return HandType.straight_flush
+    return False
+
+def four_of_a_kind(cards = []):
+    return False
+
+def full_house(cards = []):
+    return False
+
+def flush(cards = []):
+    return False
+
+def straight(cards = []):
+    return HandType.straight
+    return False
+
+def three_of_a_kind(cards = []):
+    return False
+
+def two_pairs(cards = []):
+    return False
+
+def pair(cards = []):
+    return False
+
+def high_card(cards = []):
+    return HandType.high_Card
+
+class HandType(enum.IntEnum):
+    """ Ranking of hands in falling order """
+    royal_flush = 9
+    straight_flush = 8
+    four_of_a_kind = 7
+    full_house = 6
+    flush = 5
+    straight = 4
+    three_of_a_kind = 3
+    two_pairs = 2
+    pair = 1 
+    high_Card = 0
+
+class PokerHand():
+
+    def __init__(self, cards = []):
+        hands = [royal_flush, straight_flush, four_of_a_kind, full_house, flush, straight, three_of_a_kind, two_pairs, pair, high_card]
+        """ Check if the hand can create a pokerhand starting from the top """
+        self.hand = False
+
+        """ Lös så att cards bara är fem kort men att alla möjligheter för de 7 olika kortmöjligheterna testas"""
+        for hand in hands:
+            self.hand = hand(cards)
+            if self.hand: break
+
+
+    def __lt__(self, other):
+        if self.value < other.value: return True
+        else: return False
+        
+       
 if __name__ == '__main__':
 
     texas = StandardDeck()
     texas.shuffle()
     
     p1 = Hand()
+    p1.add_card(AceCard(Suit.Diamonds))
+    p1.add_card(NumberedCard(10,Suit.Diamonds))
+    p1.add_card(JackCard(Suit.Diamonds))
+    p1.add_card(QueenCard(Suit.Diamonds))
+    p1.add_card(KingCard(Suit.Diamonds))
+
+    print(type(p1.cards[0]))
+    had = PokerHand(p1.cards)
+    print(had.hand)
     
