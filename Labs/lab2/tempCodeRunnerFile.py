@@ -1,1 +1,1 @@
-print
+(QueenCard(Suit.Diamonds))

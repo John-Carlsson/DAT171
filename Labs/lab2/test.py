@@ -1,5 +1,6 @@
 
 from abc import ABCMeta, abstractmethod
+from cmath import log10
 import enum
 class PlayingCard(metaclass=ABCMeta):
     """ Abstract base class for the playing cards"""
@@ -64,3 +65,8 @@ class StandardDeck:
     def draw(self, number):
         pass
 
+li = [(3,(2,1)), (3,(3,2))]
+l1 = [2,1]
+l2 = [2,1,0]
+m = max(li)
+print(l1<l2)
