@@ -1,5 +1,7 @@
 """ Dat 171, Computer Assignment 1, written by John Carlsson, spring of 2022 """
 
+from dis import dis
+import imp
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.sparse import *
@@ -10,6 +12,12 @@ import math
 
 
 def read_coordinate_file(filename):
+    """ Take input coordinates and remove unwanted characters, returns a np.array. Input should be a .txt file with each row looking like this: '{0., -1.}' 
+    param value: .txt file with rows like this '{0., -1.}
+    
+    return: coordinates like this 0. -1.
+    type value: np.array
+    """
     lista = []
     not_allowed = '{}'
     r = 1
@@ -17,10 +25,10 @@ def read_coordinate_file(filename):
     with open(filename, 'r') as file:  # Comma separated numbers, '{a,b}'
         for line in file:
             for char in not_allowed:
-                line = line.replace(char, '').strip()  # Remove the brackets , unwanted blankspace and /n from the string
+                line = line.strip(char)  # Remove the brackets , unwanted blankspace and /n from the string
+                line = line.strip()
             coord = line.split(',')
-            coord = [(r*math.radians(float(coord[1]))), (r*math.log(math.tan(math.pi/4.0 + np.radians(float(coord[0]))/2.0)))]  # transform from string to float and a,b to x,y
-            coord.reverse()
+            coord = [(r*math.log(math.tan(math.pi/4.0 + np.radians(float(coord[0]))/2.0))), (r*math.radians(float(coord[1])))]  # transform from string to float and a,b to x,y
             # transform from string to float and a,b to x,y
             lista.append(np.array(coord))
 
@@ -28,8 +36,14 @@ def read_coordinate_file(filename):
 
 
 def plot_points(coord_list, indices, path):
-
-    fig, ax = plt.subplots()    
+    """ Function for plotting the map and the shortest path between two points
+    input: list of coordinates = [[x1,y1], indices = [[z1,z2],[z1,z3]], path = [0,1,2,3]
+    param type = list,list,list
+    output: plots a graph
+    
+    """
+    plt.gca().set_aspect('equal')
+    ax = plt.subplot(1,1,1)    
     segs = np.empty((len(indices), 2, 2))  # Create the empty array to allocate the linesegment, the dimensions are known
     col = ['grey'] * len(indices)  # Define color and linewidth for the most common type of line
     lw = [.3] * len(indices)
@@ -57,11 +71,19 @@ def plot_points(coord_list, indices, path):
     ax.scatter(coord_list[:,0],coord_list[:,1], s=5, color='red')
     end = time.time()
     print('time to scatter:', end-start)
-    ax.autoscale()
+    
     plt.show()
+
 
    
 def construct_graph_connections(coord_list, radius):
+    """ Setup the graph connections within a given radius with query ball point
+        param value: coordinates = [[x1,y1], [x2,y2]], radius
+        type value: list, int
+
+        return: Connections = [[z1, z2], [z1, z3]], distance between the connections = [l1,l2]
+        type value: np.array, np.array
+    """
     con = []
     distance = []
 
@@ -70,12 +92,19 @@ def construct_graph_connections(coord_list, radius):
             dist = np.linalg.norm(a - coord_list[m])                  # Distance between two points
             if dist <= radius:
                 distance.append(dist)
-                con.append(np.array([n, m]))
+                con.append([n, m])
 
     return np.array(distance), np.array(con)
 
 
 def construct_fast_graph_connections(coord_list, radius):
+    """ Setup the graph connections within a given radius with query ball point
+        param value: coordinates = [[x1,y1], [x2,y2]], radius
+        type value: list, int
+        return: Connections = [[z1, z2], [z1, z3]], distance between the connections = [l1,l2]
+        type value: np.array, np.array
+
+    """
     tree = cKDTree(coord_list)
     distance = []
     con = []
@@ -85,16 +114,23 @@ def construct_fast_graph_connections(coord_list, radius):
     for i, point in enumerate(points):
         for el in point:
             if el >= i:                                      #  Make a list of connections, since the graph is "undirected" there will
-                con.append(np.array([i, el]))                #  only be one "road" between nodes since you can go both ways on the same road
+                con.append(np.array([i, el]))                          #  only be one "road" between nodes since you can go both ways on the same road
 
-    for i, nei in con:
-        distance.append(np.linalg.norm(coord_list[i] - coord_list[nei]))  # Calculate distance between nodes within range
-        
+    con_array = np.array(con)
+    conec = np.array([coord_list[con_array[:,0]], [coord_list[con_array[:,1]]]])
+    distance = np.linalg.norm((conec[0]) - (conec[1]), axis=-1)
+    
+    return con_array, distance[0]
 
-    return np.array(con), np.array(distance)
 
+def construct_graph(indices, distance, N):
+    """ Construct the graph with indices and the distance between them 
+    param value: list of indices, distance between indices and size of matrix
+    type value: np.array, np.array, int
 
-def construct_graph(indices, distance,N):
+    return: sparse matrix
+    type value: csr_matrix
+    """
     
     indices = indices.T
     sparse = csr_matrix((distance, indices),shape=(N,N))
@@ -103,6 +139,17 @@ def construct_graph(indices, distance,N):
 
 
 def find_shortest_path(graph, start_node, end_node):
+    """ Uses a graph and start and end node to find the shortest path using the csgraph.shortest path function 
+
+    param value: a graph, start node, end node
+    type value: csr_matrix, int, int
+
+    return: Path from start to end, total distance of path
+    type value: list, int
+    
+    
+    """
+
     cs, pred = csgraph.shortest_path(graph, indices=start_node, directed = False, return_predecessors=True)
     dist = cs[end_node]
     path = []
@@ -117,7 +164,7 @@ def find_shortest_path(graph, start_node, end_node):
 if __name__ == '__main__':
 
     """ Settings: """
-    SCENARIO = '2'  # '1' ,'2' or '3' for sample, hungary or germany respectively
+    SCENARIO = '3'  # '1' ,'2' or '3' for sample, hungary or germany respectively
     SPEED = 'fast'  # can be 'slow' or 'fast'
 
     if SCENARIO == '1':
@@ -166,6 +213,7 @@ if __name__ == '__main__':
     """ Construct graph """
     start = time.time()
     N = len(dist)
+    
     graph = construct_graph(connections, dist, N)
     end = time.time()
     func3 = end-start   
@@ -186,4 +234,4 @@ if __name__ == '__main__':
     plot_points(coordinates, connections, path)
 
 
-    
+    # 
