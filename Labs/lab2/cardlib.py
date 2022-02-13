@@ -183,41 +183,48 @@ class HandType(enum.IntEnum):
     pair = 1 
     high_Card = 0
 
-# The functions for checking if a hand can be created, if a hand can be created, return the best scenario for that hand.
-def royal_flush(cards = []):
-    vals = [(c.get_value(), c.suit) for c in cards] \
-       + [(1, c.suit) for c in cards if c.get_value() == 14]  # Add the aces!
 
-    # cards.sort(key = lambda x: x.get_value())
-    # if cards[-1].get_value() == 14:
-    #     if check_diff(cards):
-    #         if check_suit(cards):
-    #             return HandType.royal_flush.value, cards[-1]
+def royal_flush(cards = []):
+
+    
+    values = [(x.get_value(), x.get_suit()) for x in cards] 
+
+    cardvalues = [x.get_value() for x in cards]
+    if not 14 in cardvalues: return 0,0
+
+    c = sorted(cards, reverse=True) # Starting point (high card)
+    # Check if we have the value - k in the set of cards:
+    found_straight = True
+    for k in range(1,5):
+        if (c[0].get_value() - k, c[0].get_suit()) not in values:
+            found_straight = False
+    if found_straight:
+        return HandType.royal_flush.value, sorted(cardvalues,reverse=True)
     return 0,0
+    
 
 def straight_flush(cards = []):
+    """
+    Checks for the best straight flush in a list of cards (may be more than just 5)
+    :param cards: A list of playing cards.
+    :return: None if no straight flush is found, else the value of the top card.
+    """
     
     values = [(x.get_value(), x.get_suit()) for x in cards] \
-        +[(1, x.suit) for x in cards if x.get_value() == 14]
+        +[(1, x.suit) for x in cards if x.get_value() == 14] # Add the aces value 1!
 
-    values = sorted(values, reverse=True)
-    for c in reversed(cards): # Starting point (high card) # funkar inte riktigt, måste fixa sorten
+    cardvalues = [x.get_value() for x in cards]
+
+    for c in reversed(sorted(cards)): # Starting point (high card)
         # Check if we have the value - k in the set of cards:
         found_straight = True
         for k in range(1,5):
-            if (c.get_value() - k, c.get_suit) not in values:
+            if (c.get_value() - k, c.get_suit()) not in values:
                 found_straight = False
 
         if found_straight:
-            return HandType.straight_flush.value, sorted(values,reverse=True)
+            return HandType.straight_flush.value, sorted(cardvalues,reverse=True)
         return 0,0
-
-    
-
-   
-   
-   
-   
 
 def four_of_a_kind(cards = []):
     counts = []
@@ -250,7 +257,7 @@ def flush(cards = []):
 def straight(cards = []):
     values = set(x.get_value() for x in cards) # sort an take out duplicates to check if you can make a straight
     values = list(values)
-    if 14 in values: # If you have an ace you need to add the value 14
+    if 14 in values: # If you have an ace you need to add the value 1
         values.append(1)
     values.sort()
     
@@ -333,7 +340,6 @@ class PokerHand:
             hand_value, card_values = hand(cards) # returns hand value and a set of the values for the cards in the hand
             self.poker_hands.append((hand_value,card_values)) # The values for possible pokerhands
            
-        print(self.poker_hands)
     """ att göra här:
     en funktion som rangordnar och sorterar ut vem som vinner
     self.best_hand = den bästa handen som en sträng från listan
