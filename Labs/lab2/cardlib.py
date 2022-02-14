@@ -149,8 +149,7 @@ class Hand:
    
     def best_poker_hand(self, cards = []):
         """ Compute the best possible hand with your current cards """
-        cards += self.cards
-        return PokerHand(cards)
+        return PokerHand(self.cards + cards)
 
 class StandardDeck:
     """ A standard deck of 52 cards """
@@ -186,15 +185,16 @@ class HandType(enum.IntEnum):
     pair = 1 
     high_Card = 0
 
+    def __str__(self):
+        return self.name.replace('_', ' ')
+
 
 # Here are functions for checking if a certain hand can be created
-def royal_flush(cards = []):
+def royal_flush(cards):    
 
-    
     values = [(x.get_value(), x.get_suit()) for x in cards] 
-
     cardvalues = [x.get_value() for x in cards]
-    if not 14 in cardvalues: return 0,0
+    if not 14 in cardvalues: return
 
     c = sorted(cards, reverse=True) # Starting point (high card)
     # Check if we have the value - k in the set of cards:
@@ -203,10 +203,9 @@ def royal_flush(cards = []):
         if (c[0].get_value() - k, c[0].get_suit()) not in values:
             found_straight = False
     if found_straight:
-        return HandType.royal_flush.value, sorted(cardvalues,reverse=True)
-    return 0,0
+        return HandType.royal_flush
     
-def straight_flush(cards = []):
+def straight_flush(cards):
     """
     Checks for the best straight flush in a list of cards (may be more than just 5)
     :param cards: A list of playing cards.
@@ -226,26 +225,25 @@ def straight_flush(cards = []):
                 found_straight = False
 
         if found_straight:
-            return HandType.straight_flush.value, sorted(cardvalues,reverse=True)
-        return 0,0
+            return HandType.straight_flush, sorted(cardvalues,reverse=True)
 
-def four_of_a_kind(cards = []):
-    counts = []
+def four_of_a_kind(cards):
+    counts = dict()
     values = [x.get_value() for x in cards]
-    if 14 in values:
-        values.append(1)
     for v in values:
-        counts.append(values.count(v))
-    if 4 in counts: return HandType.four_of_a_kind.value, sorted(values,reverse=True)
-    return 0,0
+        counts[values.count(v)] = v
+    if 4 in counts.keys(): return HandType.four_of_a_kind, counts[4]
 
 def full_house(cards = []):
-    counts = []
+    counts = dict()
     values = [x.get_value() for x in cards]
     for v in values:
-        counts.append(values.count(v))
-    if (3 in counts) and (2 in counts): return HandType.full_house.value, sorted(values,reverse=True)
-    return 0,0
+        counts[values.count(v)] = v
+        # Fixa så att trissens värde vägs in
+    if (3 in counts.keys()) and (2 in counts.keys()): 
+        three = counts[3]
+        two = counts[2]
+        return HandType.full_house, (three,two)
 
 def flush(cards = []):
     suits = [x.get_suit() for x in cards]
@@ -253,10 +251,9 @@ def flush(cards = []):
     counts = []
     for s in suits:
         counts.append(suits.count(s))
-    if 5 in counts: return HandType.flush.value, sorted(values,reverse=True)
-    return 0,0
+    if 5 in counts: return HandType.flush, sorted(values,reverse=True)
    
-def straight(cards = []):
+def straight(cards):
     values = set(x.get_value() for x in cards) # sort an take out duplicates to check if you can make a straight
     values = list(values)
     if 14 in values: # If you have an ace you need to add the value 1
@@ -269,22 +266,16 @@ def straight(cards = []):
             check_straight = 1
             continue
         check_straight += 1
-        if check_straight == 5: return HandType.straight.value, sorted(values,reverse=True)
+        if check_straight == 5: return HandType.straight, sorted(values,reverse=True)
     
-    return 0,0
-    
-def three_of_a_kind(cards = []):
-    counts = []
+def three_of_a_kind(cards):
+    counts = dict()
     values = [x.get_value() for x in cards]
-    if 14 in values:
-        values.append(1)
     for v in values:
-        counts.append(values.count(v))
+        counts[values.count(v)] = v
+    if 3 in counts.keys(): return HandType.three_of_a_kind, counts[3]
 
-    if 3 in counts: return HandType.three_of_a_kind.value, sorted(values,reverse=True)
-    return 0,0
-
-def two_pairs(cards = []):
+def two_pairs(cards):
     pair_list = set()
     values = [x.get_value() for x in cards]
     if 14 in values:
@@ -294,10 +285,9 @@ def two_pairs(cards = []):
             if v == values[n]:
                 pair_list.add(v)
     
-    if len(pair_list) == 2: return HandType.two_pairs.value, sorted(values,reverse=True)
-    return 0,0
+    if len(pair_list) == 2: return HandType.two_pairs, sorted(pair_list,reverse=True)
 
-def pair(cards = []):
+def pair(cards):
     pair_list = set()
     values = [x.get_value() for x in cards]
     if 14 in values: # if you have an ace you need to add the value 1
@@ -307,72 +297,60 @@ def pair(cards = []):
             if v == values[n]:
                 pair_list.add(v)
     
-    if pair_list: return HandType.pair.value, sorted(values,reverse=True)
-    return 0,0
+    if pair_list: return HandType.pair, sorted(values,reverse=True)
     
-def high_card(cards = []):
+def high_card(cards):
     values = [x.get_value() for x in cards]
-    return HandType.high_Card.value, set(values)
+    return HandType.high_Card, values.sort(reverse=True)
 
 class PokerHand:
-    """ A pokerhand of 5 cards """
     
-    def __init__(self, cards = []):
+    def __init__(self, cards):
         """ Create a bunch of pokerhands, each pokerhand function should be able to handle any amount cards 
 
         param cards: A list of cards
         type value: list och Playingcards
         
         """
-        self.poker_hands = [] # a list of tuples with the value of the hand and the ighest card value
-
         # A list of the functions for checking various pokerhands, any amount of cards can be checked
         hands = [royal_flush, straight_flush, four_of_a_kind, full_house, flush, straight, three_of_a_kind, two_pairs, pair, high_card]
-        
-        # Names of the hands
-        list_of_hands = ['Royal Flush', 'Straight Flush', 'Four of a kind', 'Full House', 'Flush', 'Straight', 'Three of a kind', 'Two Pairs', 'Pair', 'High Card']
-        list_of_hands.reverse() # reverse since i didn't write it in the correct order :))))
-        self.list_of_hands = list_of_hands
-
         # This loop takes out all possible pokerhands able to be constructed with any number of given cards
         for hand in hands:
-            hand_value, card_values = hand(cards) # returns hand value and a list of the values for the cards in the hand
-            self.poker_hands.append((hand_value,card_values)) # The values for possible pokerhands
-           
-            
+            if hand(cards) is not None:
+                self.best_hand, self.values = hand(cards)
+                break
+
     def __str__(self):
-        return f"Your best pokerhand is a {self.list_of_hands[max(self.poker_hands)[0]]}!"
-        
+        return f"Your best pokerhand is a {self.best_hand.name}!"
 
     def __lt__(self, other):
-        if self.poker_hands < other.poker_hands: return True
-        return False
-                
+        return (self.best_hand, self.values) < (other.best_hand, other.values)
+
+    def __eq__(self, other):
+        return (self.best_hand, self.values) == (other.best_hand, other.values)
 
 
 if __name__ == '__main__':
 
-    texas = StandardDeck()
-    texas.shuffle()
+    for w in range(10000):
+        texas = StandardDeck()
+        texas.shuffle()
+        
+        p1 = Hand()
+        p2 = Hand()
+        table = Hand()
+        for i in range(2):
+            p1.add_card(texas.draw())
+            p2.add_card(texas.draw())
     
-    p1 = Hand()
-   
-    p1.add_card(JackCard(Suit.Hearts))
-    p1.add_card(JackCard(Suit.Clubs))
-    p1.add_card(JackCard(Suit.Diamonds))
-    p1.add_card(JackCard(Suit.Spades))
-   
-    p2 = Hand()
-    p2.add_card(QueenCard(Suit.Diamonds))
-    p2.add_card(QueenCard(Suit.Spades))
-    p2.add_card(QueenCard(Suit.Clubs))
-    p2.add_card(QueenCard(Suit.Hearts))
+        for i in range(5):  
+            table.add_card(texas.draw())
+        
+        p1_best = p1.best_poker_hand(table.cards)
+        p2_best = p2.best_poker_hand(table.cards)
+        # print(p1, '\n', p2, '\n', table)
+        # print(p1_best,'\n', p2_best)
+        # print(p1_best < p2_best)
+        print(w)
     
-    
-    
-    
-
-    p1_best = p1.best_poker_hand()
-    p2_best = p2.best_poker_hand()
-    print(p2_best > p1_best)
     
