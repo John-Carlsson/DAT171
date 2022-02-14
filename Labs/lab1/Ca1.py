@@ -78,7 +78,7 @@ def plot_points(coord_list, indices, path):
    
 def construct_graph_connections(coord_list, radius):
     """ Setup the graph connections within a given radius with query ball point
-        param value: coordinates = [[x1,y1], [x2,y2]], radius
+        param coordinates: = [[x1,y1], [x2,y2]], radius
         type value: list, int
 
         return: Connections = [[z1, z2], [z1, z3]], distance between the connections = [l1,l2]
@@ -99,9 +99,13 @@ def construct_graph_connections(coord_list, radius):
 
 def construct_fast_graph_connections(coord_list, radius):
     """ Setup the graph connections within a given radius with query ball point
-        param value: coordinates = [[x1,y1], [x2,y2]], radius
-        type value: list, int
-        return: Connections = [[z1, z2], [z1, z3]], distance between the connections = [l1,l2]
+        param coordinates: [[x1,y1], [x2,y2]], 
+        param radius:
+        type coordinates: list, 
+        type radius: int
+        return connections: [[z1, z2], [z1, z3]], 
+        return distance: between the connections = [l1,l2]
+        type connnections: 
         type value: np.array, np.array
 
     """

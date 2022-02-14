@@ -3,8 +3,6 @@
 from abc import ABCMeta, abstractmethod
 import enum
 from random import shuffle
-from unittest import suite
-import numpy as np
 
 
 class PlayingCard(metaclass=ABCMeta):
@@ -26,25 +24,26 @@ class PlayingCard(metaclass=ABCMeta):
 
     @abstractmethod
     def __str__(self):
-        pass
+        """ Overloading the str operator. Returns a nice text of the card """
+        
 
     @abstractmethod
     def get_value(self):
-        pass
+        """ Return the cards value """
         
     @abstractmethod
     def get_suit(self):
-        pass
+        """ Returns the suit of the card """
 
 class Suit(enum.IntEnum):
-    """ A class for the different kind of suits in a deck of cards"""
+    """ A class for the different kind of suits in a deck of cards """
     Hearts = 0
     Spades = 1
     Clubs = 2
     Diamonds = 3
 
 class NumberedCard(PlayingCard):
-    """ A class for the numbered playingcards in a deck of cards"""
+    """ A class for the numbered playingcards in a deck of cards """
     
     def __init__(self, value, suit):
         super().__init__(suit)
@@ -60,7 +59,7 @@ class NumberedCard(PlayingCard):
         return self.suit
     
 class AceCard(PlayingCard):
-    """ A class for the aces in deck of cards"""
+    """ A class for the aces in deck of cards, value is set at 14, since Aces are normaly seen as the most valuable card. """
 
     def __init__(self, suit):
         super().__init__(suit)
@@ -69,8 +68,7 @@ class AceCard(PlayingCard):
         return f"Ace of {self.get_suit().name}, with values {self.get_value()} or 1"
 
     def get_value(self):
-        " Fixa så att det kan va 1 eller 14"
-        return 14
+        return 14 # Value is set at 14, since its the most common use of the ace. The value
     
     def get_suit(self):
         return self.suit
@@ -120,20 +118,22 @@ class JackCard(PlayingCard):
         return self.suit
 
 class Hand: 
-    """ A players hand containing in this instance of texas hold em, 2 cards """
+    """ A players hand containing any number of cards"""
 
     def __init__(self):
         self.cards = []    
 
     def __str__(self):
-        return f"A hand with the cards {self.cards[0]} and {self.cards[1]}"
+        return "A hand with the cards: " + ', '.join([str(x) for x in self.cards])
 
-    """ Add cards to hand """
+    
     def add_card(self, card):
+        """ Add cards to hand """
         self.cards.append(card)
         
-    """ Drop one or several cards by index """
+    
     def drop_cards(self, index):
+        """ Drop one or several cards by index """
         index.sort()
         n = 0
         for i in index:
@@ -141,12 +141,15 @@ class Hand:
             del self.cards[i]
             n += 1
     
-    """ Sort the hand from smallest to largest ?? """
+    
     def sort(self):
+        """ Sort the hand from smallest to largest ?? """
         self.cards.sort()
 
-    """ Compute the best possible hand with your current cards """
+   
     def best_poker_hand(self, cards = []):
+        """ Compute the best possible hand with your current cards """
+        cards += self.cards
         return PokerHand(cards)
 
 class StandardDeck:
@@ -184,6 +187,7 @@ class HandType(enum.IntEnum):
     high_Card = 0
 
 
+# Here are functions for checking if a certain hand can be created
 def royal_flush(cards = []):
 
     
@@ -202,7 +206,6 @@ def royal_flush(cards = []):
         return HandType.royal_flush.value, sorted(cardvalues,reverse=True)
     return 0,0
     
-
 def straight_flush(cards = []):
     """
     Checks for the best straight flush in a list of cards (may be more than just 5)
@@ -253,7 +256,6 @@ def flush(cards = []):
     if 5 in counts: return HandType.flush.value, sorted(values,reverse=True)
     return 0,0
    
-
 def straight(cards = []):
     values = set(x.get_value() for x in cards) # sort an take out duplicates to check if you can make a straight
     values = list(values)
@@ -271,9 +273,6 @@ def straight(cards = []):
     
     return 0,0
     
-    
-
-
 def three_of_a_kind(cards = []):
     counts = []
     values = [x.get_value() for x in cards]
@@ -311,7 +310,6 @@ def pair(cards = []):
     if pair_list: return HandType.pair.value, sorted(values,reverse=True)
     return 0,0
     
-
 def high_card(cards = []):
     values = [x.get_value() for x in cards]
     return HandType.high_Card.value, set(values)
@@ -320,36 +318,27 @@ class PokerHand:
     """ A pokerhand of 5 cards """
     
     def __init__(self, cards = []):
-        """ Create a bunch of pokerhands and return the best one, each pokerhand function should be able to handle any amount cards 
-        param value: cards
+        """ Create a bunch of pokerhands, each pokerhand function should be able to handle any amount cards 
+
+        param cards: A list of cards
         type value: list och Playingcards
         
         """
         self.poker_hands = [] # a list of tuples with the value of the hand and the ighest card value
-        self.bh = None # Best hand
-        self.card = None # Best card in the best hand
-        self.hand = None # Just a name for the hand
-        # A list of the functions for checking various pokerhands
+
+        # A list of the functions for checking various pokerhands, any amount of cards can be checked
         hands = [royal_flush, straight_flush, four_of_a_kind, full_house, flush, straight, three_of_a_kind, two_pairs, pair, high_card]
+        
+        # Names of the hands
         list_of_hands = ['Royal Flush', 'Straight Flush', 'Four of a kind', 'Full House', 'Flush', 'Straight', 'Three of a kind', 'Two Pairs', 'Pair', 'High Card']
         list_of_hands.reverse() # reverse since i didn't write it in the correct order :))))
         self.list_of_hands = list_of_hands
 
         # This loop takes out all possible pokerhands able to be constructed with any number of given cards
         for hand in hands:
-            hand_value, card_values = hand(cards) # returns hand value and a set of the values for the cards in the hand
+            hand_value, card_values = hand(cards) # returns hand value and a list of the values for the cards in the hand
             self.poker_hands.append((hand_value,card_values)) # The values for possible pokerhands
            
-    """ att göra här:
-    en funktion som rangordnar och sorterar ut vem som vinner
-    self.best_hand = den bästa handen som en sträng från listan
-    self.card = högsta värdet på kortet i handen. Inte nödvändigt tror jag
-
-    
-    
-    """
-        
-                
             
     def __str__(self):
         return f"Your best pokerhand is a {self.list_of_hands[max(self.poker_hands)[0]]}!"
@@ -367,18 +356,23 @@ if __name__ == '__main__':
     texas.shuffle()
     
     p1 = Hand()
-    p1.add_card(AceCard(Suit.Diamonds))
-    p1.add_card(NumberedCard(10,Suit.Diamonds))
-    p1.add_card(JackCard(Suit.Diamonds))
+   
     p1.add_card(JackCard(Suit.Hearts))
-    p1.add_card(JackCard(Suit.Spades))
     p1.add_card(JackCard(Suit.Clubs))
-    p1.add_card(QueenCard(Suit.Diamonds))
-    p1.add_card(QueenCard(Suit.Spades))
-    p1.add_card(KingCard(Suit.Diamonds))
-    p1.add_card(NumberedCard(8,Suit.Diamonds))
+    p1.add_card(JackCard(Suit.Diamonds))
+    p1.add_card(JackCard(Suit.Spades))
+   
+    p2 = Hand()
+    p2.add_card(QueenCard(Suit.Diamonds))
+    p2.add_card(QueenCard(Suit.Spades))
+    p2.add_card(QueenCard(Suit.Clubs))
+    p2.add_card(QueenCard(Suit.Hearts))
+    
+    
+    
+    
 
-    #print(type(p1.cards[0]))
-    f = PokerHand(p1.cards)
-    print(f)
+    p1_best = p1.best_poker_hand()
+    p2_best = p2.best_poker_hand()
+    print(p2_best > p1_best)
     
