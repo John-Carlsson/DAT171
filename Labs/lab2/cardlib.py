@@ -203,7 +203,7 @@ def royal_flush(cards):
         if (c[0].get_value() - k, c[0].get_suit()) not in values:
             found_straight = False
     if found_straight:
-        return HandType.royal_flush
+        return HandType.royal_flush, 0
     
 def straight_flush(cards):
     """
@@ -232,7 +232,7 @@ def four_of_a_kind(cards):
     values = [x.get_value() for x in cards]
     for v in values:
         counts[values.count(v)] = v
-    if 4 in counts.keys(): return HandType.four_of_a_kind, counts[4]
+    if 4 in counts.keys(): return HandType.four_of_a_kind, (counts[4], sorted(values,reverse=True))
 
 def full_house(cards = []):
     counts = dict()
@@ -243,7 +243,7 @@ def full_house(cards = []):
     if (3 in counts.keys()) and (2 in counts.keys()): 
         three = counts[3]
         two = counts[2]
-        return HandType.full_house, (three,two)
+        return HandType.full_house, ((three,two), sorted(values,reverse=True))
 
 def flush(cards = []):
     suits = [x.get_suit() for x in cards]
@@ -273,7 +273,7 @@ def three_of_a_kind(cards):
     values = [x.get_value() for x in cards]
     for v in values:
         counts[values.count(v)] = v
-    if 3 in counts.keys(): return HandType.three_of_a_kind, counts[3]
+    if 3 in counts.keys(): return HandType.three_of_a_kind, (counts[3],sorted(values,reverse=True))
 
 def two_pairs(cards):
     pair_list = set()
@@ -285,7 +285,7 @@ def two_pairs(cards):
             if v == values[n]:
                 pair_list.add(v)
     
-    if len(pair_list) == 2: return HandType.two_pairs, sorted(pair_list,reverse=True)
+    if len(pair_list) == 2: return HandType.two_pairs, (sorted(pair_list,reverse=True),sorted(values,reverse=True))
 
 def pair(cards):
     pair_list = set()
@@ -332,7 +332,6 @@ class PokerHand:
 
 if __name__ == '__main__':
 
-    for w in range(10000):
         texas = StandardDeck()
         texas.shuffle()
         
@@ -348,9 +347,14 @@ if __name__ == '__main__':
         
         p1_best = p1.best_poker_hand(table.cards)
         p2_best = p2.best_poker_hand(table.cards)
-        # print(p1, '\n', p2, '\n', table)
+
+        print(p1, '\n', p2, '\n', table)
+        if p2_best < p1_best:
+            print('Spelare 1 vinner')
+        elif p1_best < p2_best:
+            print('Spelare 2 vinner')
         # print(p1_best,'\n', p2_best)
         # print(p1_best < p2_best)
-        print(w)
+        # 
     
     

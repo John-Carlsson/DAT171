@@ -13,10 +13,10 @@ import math
 
 def read_coordinate_file(filename):
     """ Take input coordinates and remove unwanted characters, returns a np.array. Input should be a .txt file with each row looking like this: '{0., -1.}' 
-    param value: .txt file with rows like this '{0., -1.}
+    param filenmae: .txt file with rows like this '{0., -1.}
     
-    return: coordinates like this 0. -1.
-    type value: np.array
+    return coordinates: like this 0. -1.
+    type coordinates: np.array of floats
     """
     lista = []
     not_allowed = '{}'
@@ -37,9 +37,16 @@ def read_coordinate_file(filename):
 
 def plot_points(coord_list, indices, path):
     """ Function for plotting the map and the shortest path between two points
-    input: list of coordinates = [[x1,y1], indices = [[z1,z2],[z1,z3]], path = [0,1,2,3]
-    param type = list,list,list
-    output: plots a graph
+    param coord_list: list of coordinates
+    param indices: a list of lists with cities that connect
+    param path: A list of the shortest path of visited nodes from a to b
+
+    
+    param coord_list = np.array of np.array of floats like this [[x1,y1], [x2,y2]]
+    param indices: np.array of np.array like this [[z1, z2], [z2,z3]]
+    param path: np.array like this [1,2,3,4]
+    
+    return: plots a graph
     
     """
     plt.gca().set_aspect('equal')
@@ -73,14 +80,16 @@ def plot_points(coord_list, indices, path):
     print('time to scatter:', end-start)
     
     plt.show()
-
-
    
 def construct_graph_connections(coord_list, radius):
-    """ Setup the graph connections within a given radius with query ball point
-        param coordinates: = [[x1,y1], [x2,y2]], radius
-        type value: list, int
+    """ Setup the graph connections within a given radius 
+        param coord_list: np.array of np.array of floats like this [[x1,y1], [x2,y2]]
+        param radius: a radius
 
+        type coord_list: np.array of np.array of two floats
+        type coord_list: int
+
+        
         return: Connections = [[z1, z2], [z1, z3]], distance between the connections = [l1,l2]
         type value: np.array, np.array
     """
