@@ -18,7 +18,6 @@ def test_cards():
         pc = PlayingCard(Suit.Clubs)
     print("first test done")
 
-
 # This test assumes you call your shuffle method "shuffle" and the method to draw a card "draw"
 def test_deck():
     d = StandardDeck()

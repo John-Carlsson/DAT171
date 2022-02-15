@@ -245,6 +245,15 @@ def straight_flush(cards):
             return HandType.straight_flush, sorted(cardvalues,reverse=True)
 
 def four_of_a_kind(cards):
+    """ A function checking if a four of kind can be made with the given cards
+
+    Args:
+        cards (list): A list of PlayingCard objects
+
+    Returns:
+        HandType, tuple (int, list of ints): A Handtype for the pokerhand and a a tuple of the card thats a four of a kind and a
+         list of all the cards in the hand in falling order
+    """
     counts = dict()
     values = [x.get_value() for x in cards]
     for v in values:
@@ -252,6 +261,15 @@ def four_of_a_kind(cards):
     if 4 in counts.keys(): return HandType.four_of_a_kind, (counts[4], sorted(values,reverse=True))
 
 def full_house(cards):
+    """ A function checking if a full house can be made with the given cards
+
+    Args:
+        cards (list): A list of PlayingCard objects
+
+    Returns:
+        HandType, tuple (int, list of ints): A Handtype for the pokerhand and a a tuple of the cards that make up the full house and a
+        list of all the cards in the hand in falling order
+    """
     counts = dict()
     values = [x.get_value() for x in cards]
     for v in values:
