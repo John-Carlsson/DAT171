@@ -6,8 +6,11 @@ from random import shuffle
 
 
 class PlayingCard(metaclass=ABCMeta):
-    """ Abstract base class for the playing cards
-    param value: suit
+    """_summary_
+    A class for the playingcards in a standard deck of 52 cards
+
+    Args:
+        metaclass (_type_, optional): _description_. Defaults to ABCMeta.
     """
     def __init__(self,suit):
         self.suit = suit
@@ -36,7 +39,12 @@ class PlayingCard(metaclass=ABCMeta):
         """ Returns the suit of the card """
 
 class Suit(enum.IntEnum):
-    """ A class for the different kind of suits in a deck of cards """
+    """_summary_
+    A class for the suits in a deck of cards 
+
+    Args:
+        enum (_type_): _description_
+    """
     Hearts = 0
     Spades = 1
     Clubs = 2
@@ -185,12 +193,21 @@ class HandType(enum.IntEnum):
     pair = 1 
     high_Card = 0
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name.replace('_', ' ')
 
 
 # Here are functions for checking if a certain hand can be created
 def royal_flush(cards):    
+    """A function for checking if a Royal flush can be created with the cards given
+
+    Args:
+        param cards (list): A list of PlayingCard objects
+
+    Returns:
+        HandType, list: a HandType object and a list of values
+    """
+    
 
     values = [(x.get_value(), x.get_suit()) for x in cards] 
     cardvalues = [x.get_value() for x in cards]
@@ -203,7 +220,7 @@ def royal_flush(cards):
         if (c[0].get_value() - k, c[0].get_suit()) not in values:
             found_straight = False
     if found_straight:
-        return HandType.royal_flush, 0
+        return HandType.royal_flush, cardvalues
     
 def straight_flush(cards):
     """

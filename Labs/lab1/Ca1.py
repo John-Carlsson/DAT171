@@ -33,7 +33,6 @@ def read_coordinate_file(filename):
 
     return np.array(lista)  # Create  an array of arrays with coordinates
 
-
 def plot_points(coord_list, indices, path):
     """ Function for plotting the map and the shortest path between two points
     param coord_list: list of list of coordinates
@@ -109,7 +108,6 @@ def construct_graph_connections(coord_list, radius):
 
     return np.array(distance), np.array(con)
 
-
 def construct_fast_graph_connections(coord_list, radius):
     """ Setup the graph connections within a given radius
 
@@ -142,7 +140,6 @@ def construct_fast_graph_connections(coord_list, radius):
     
     return con_array, distance[0]
 
-
 def construct_graph(indices, distance, N):
     """ Construct the graph with indices and the distance between them 
     param indices: list of indices
@@ -160,7 +157,6 @@ def construct_graph(indices, distance, N):
     sparse = csr_matrix((distance, indices),shape=(N,N))
 
     return sparse
-
 
 def find_shortest_path(graph, start_node, end_node):
     """ Uses a graph, a start and an end node to find the shortest path using the csgraph.shortest path function 
@@ -264,5 +260,3 @@ if __name__ == '__main__':
     print(f'Time to run program excluding plotting: {func5:3.5f} seconds.')
     plot_points(coordinates, connections, path)
 
-
-    # 
