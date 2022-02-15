@@ -17,13 +17,12 @@ class PlayingCard(metaclass=ABCMeta):
 
     """ Overloading  the equal operator"""
     def __eq__(self, other):
-        if (self.get_value(),self.get_suit()) == (other.get_value(),other.get_suit()): return True
-        else: return False
+        return (self.get_value(),self.get_suit()) == (other.get_value(),other.get_suit())
         
     """ Overloading  the less than operator"""
     def __lt__(self, other):
-        if self.get_value() < other.get_value(): return True
-        else: return False
+        return (self.get_value(),self.get_suit()) < (other.get_value(),other.get_suit())
+        
 
     @abstractmethod
     def __str__(self):
@@ -66,6 +65,7 @@ class NumberedCard(PlayingCard):
     def get_suit(self):
         return self.suit
     
+
 class AceCard(PlayingCard):
     """ A class for the aces in deck of cards, value is set at 14, since Aces are normaly seen as the most valuable card. """
 
@@ -140,18 +140,18 @@ class Hand:
         self.cards.append(card)
         
     
-    def drop_cards(self, index):
+    def drop_cards(self, index) -> list:
         """ Drop one or several cards by index """
-        index.sort()
-        n = 0
+        if max(index) >= len(self.cards): return 'Too few cards in hand'
+        index = list(set(index)) # remove any duplicates from the list
+        index.sort(reverse=True)
+       
         for i in index:
-            i -= n
+            
             del self.cards[i]
-            n += 1
-    
     
     def sort(self):
-        """ Sort the hand from smallest to largest ?? """
+        """ Sort the hand from smallest to largest"""
         self.cards.sort()
 
    
@@ -388,8 +388,8 @@ if __name__ == '__main__':
             print('Spelare 1 vinner')
         elif p1_best < p2_best:
             print('Spelare 2 vinner')
-        # print(p1_best,'\n', p2_best)
-        # print(p1_best < p2_best)
+        print(p1_best,'\n', p2_best)
+        print(p1_best < p2_best)
         # 
     
     

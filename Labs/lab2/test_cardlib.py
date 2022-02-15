@@ -1,3 +1,4 @@
+from ast import Assert
 import pytest
 from enum import Enum
 from cardlib import *
@@ -16,7 +17,7 @@ def test_cards():
 
     with pytest.raises(TypeError):
         pc = PlayingCard(Suit.Clubs)
-    print("first test done")
+    
 
 # This test assumes you call your shuffle method "shuffle" and the method to draw a card "draw"
 def test_deck():
@@ -93,15 +94,74 @@ def test_pokerhands():
 
 def test_more_card_types():
     """ testing More card types and their methods"""
-    pass
+    hace = AceCard(Suit.Hearts)
+    c6 = NumberedCard(6,Suit.Clubs)
+    h6 = NumberedCard(6,Suit.Hearts)
+    
+    print(hace.get_suit().name)
+    assert hace.get_suit().name == 'Hearts'
+    assert hace.get_suit().value == 0
+    assert hace.get_value() == 14
+    assert isinstance(hace, AceCard)
+
+    assert c6.get_suit().name == 'Clubs'
+    assert c6.get_suit().value == 2
+    assert c6.get_value() == 6
+    assert isinstance(c6, NumberedCard)
+
+    assert hace > c6
+    assert c6 != h6 # Check so that to cards with the same value but different suit is not worth the same
+    assert str(c6) == '6 of Clubs' # Check so that it prints correctly
+    
+    
+def test_deck_further():
+    """ Further testing the deck and its methods"""
+    deck = StandardDeck()
+    deck2 = StandardDeck()
+    assert (deck.deck == deck2.deck) and len(deck.deck) == len(deck2.deck) # Check so that two decks are the same when created
+
+    deck.shuffle()
+    assert deck.deck != deck2.deck # Check so that the shuffle function works
+    for i in deck.deck:
+        assert i in deck2.deck # Check so all cards are in the deck 
+
+    for i in range(10):
+        deck.draw()
+
+    assert len(deck.deck) < len(deck2.deck) # Check so that cards are drawn
+    assert len(deck.deck) == (52-10) # Check so that the correct number of cards are drawn
 
 def test_more_hands():
     """ testing More hand methods """
-    pass
+    deck = StandardDeck()
+    deck.shuffle()
+    
+    p1 = Hand()
+    p2 = Hand()
+    for i in range(5): # Draw 5 cards from the top of the deck, random becase of shuffle
+        p1.add_card(deck.draw())
+        p2.add_card(deck.draw())
 
-def test_deck_further():
-    """ Further testing the deck and its methods"""
-    pass
+    assert p1 != p2 # Check so that the hand are not the same
+    assert len(p1.cards) == 5 # Check so that the correct number of cards are drawn
+
+    p1.drop_cards([4,4,3]) # make sure that submitting the same index twice and removing the rightmost card twice only happens once
+    assert len(p1.cards) == 3
+    assert p1.drop_cards([len(p1.cards)]) == 'Too few cards in hand' # Make sure you can't drop a card thats out of index
+    
+    p1_best = p1.best_poker_hand()
+    assert p1_best.best_hand in HandType and isinstance(p1_best.best_hand,HandType)# Make sure that a HanType can be created and that its of the correct Type
+
+
+    deck2 = StandardDeck()
+    p3 = Hand()
+    p4 = Hand()
+    for i in range(26): # Draw all cards from the top of the deck
+        p3.add_card(deck2.draw())
+        p4.add_card(deck2.draw())
+
+    for i in p3.cards: # Check so that no cards show up twice
+        assert i not in p4.cards
 
 def test_pokerhands():
     """ Testing Card combinations giving the different poker hands"""
@@ -119,4 +179,4 @@ def test_same_pokerhands():
         """
     pass
 
-
+test_more_hands()
