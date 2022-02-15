@@ -1,7 +1,5 @@
 """ Dat 171, Computer Assignment 1, written by John Carlsson, spring of 2022 """
 
-from dis import dis
-import imp
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.sparse import *
@@ -14,9 +12,10 @@ import math
 def read_coordinate_file(filename):
     """ Take input coordinates and remove unwanted characters, returns a np.array. Input should be a .txt file with each row looking like this: '{0., -1.}' 
     param filenmae: .txt file with rows like this '{0., -1.}
+    type filename: string
     
-    return coordinates: like this 0. -1.
-    type coordinates: np.array of floats
+    return coordinates: a list of list like this [[0. -1.], [2,3]]
+    type coordinates: np.array of np.arrays of two floats 
     """
     lista = []
     not_allowed = '{}'
@@ -37,15 +36,20 @@ def read_coordinate_file(filename):
 
 def plot_points(coord_list, indices, path):
     """ Function for plotting the map and the shortest path between two points
-    param coord_list: list of coordinates
+    param coord_list: list of list of coordinates
+    type coord_list: np.array of np.arrays of two floats
+
     param indices: a list of lists with cities that connect
+    type indices: np.array of np.array of two integers
+
     param path: A list of the shortest path of visited nodes from a to b
+    type path: list
+
 
     
-    param coord_list = np.array of np.array of floats like this [[x1,y1], [x2,y2]]
-    param indices: np.array of np.array like this [[z1, z2], [z2,z3]]
-    param path: np.array like this [1,2,3,4]
     
+    
+
     return: plots a graph
     
     """
@@ -54,7 +58,7 @@ def plot_points(coord_list, indices, path):
     segs = np.empty((len(indices), 2, 2))  # Create the empty array to allocate the linesegment, the dimensions are known
     col = ['grey'] * len(indices)  # Define color and linewidth for the most common type of line
     lw = [.3] * len(indices)
-    start = time.time()
+    
 
     # [coord_list[path]]
     # segs = coord_list[indices]
@@ -65,33 +69,33 @@ def plot_points(coord_list, indices, path):
             col[i] = 'blue'
             lw[i] = 1
 
-    end = time.time()
-    print('time to draw lines:', end-start)
+    
+    
     
     # Add lines to plot
     lineseg = LineCollection(segs, linewidths = lw, color = col)
     ax.add_collection(lineseg)
 
     # Add scatter
-    start = time.time()
     coord_list = np.flip(coord_list)
     ax.scatter(coord_list[:,0],coord_list[:,1], s=5, color='red')
-    end = time.time()
-    print('time to scatter:', end-start)
     
     plt.show()
    
 def construct_graph_connections(coord_list, radius):
-    """ Setup the graph connections within a given radius 
+    """ Setup the graph connections within a given radius
         param coord_list: np.array of np.array of floats like this [[x1,y1], [x2,y2]]
-        param radius: a radius
-
         type coord_list: np.array of np.array of two floats
+
+        param radius: a radius
         type coord_list: int
 
         
-        return: Connections = [[z1, z2], [z1, z3]], distance between the connections = [l1,l2]
-        type value: np.array, np.array
+        return con: a list of indices which are within the given radius
+        type con: np.array of np arrays of two ints
+
+        return distance: the distance between the points
+        type distance: np.array of floats
     """
     con = []
     distance = []
@@ -107,16 +111,19 @@ def construct_graph_connections(coord_list, radius):
 
 
 def construct_fast_graph_connections(coord_list, radius):
-    """ Setup the graph connections within a given radius with query ball point
-        param coordinates: [[x1,y1], [x2,y2]], 
-        param radius:
-        type coordinates: list, 
-        type radius: int
-        return connections: [[z1, z2], [z1, z3]], 
-        return distance: between the connections = [l1,l2]
-        type connnections: 
-        type value: np.array, np.array
+    """ Setup the graph connections within a given radius
 
+    param coord_list: np.array of np.array of floats like this [[x1,y1], [x2,y2]]
+    type coord_list: np.array of np.array of two floats
+
+    param radius: a radius
+    type coord_list: int
+    
+    return con: a list of indices which are within the given radius
+    type con: np.array of np arrays of two ints
+
+    return distance: the distance between the points
+    type distance: np.array of floats
     """
     tree = cKDTree(coord_list)
     distance = []
@@ -138,10 +145,14 @@ def construct_fast_graph_connections(coord_list, radius):
 
 def construct_graph(indices, distance, N):
     """ Construct the graph with indices and the distance between them 
-    param value: list of indices, distance between indices and size of matrix
-    type value: np.array, np.array, int
+    param indices: list of indices
+    param distance: distance between indices
+    param N: The sixe of the matrix, also the length of the distance list
+    type indices: np.array
+    type distance: np.array
+    type N: int
 
-    return: sparse matrix
+    return: a sparse matrix where the indexes are the cities and the values at their location is the distance between them
     type value: csr_matrix
     """
     
@@ -152,13 +163,20 @@ def construct_graph(indices, distance, N):
 
 
 def find_shortest_path(graph, start_node, end_node):
-    """ Uses a graph and start and end node to find the shortest path using the csgraph.shortest path function 
+    """ Uses a graph, a start and an end node to find the shortest path using the csgraph.shortest path function 
 
-    param value: a graph, start node, end node
-    type value: csr_matrix, int, int
+    param graph: a graph
+    param start_node: start node
+    param end node: end node
 
-    return: Path from start to end, total distance of path
-    type value: list, int
+    type graph: csr_matrix
+    type start_node: int
+    type end_node: int
+
+    return path: a list of visited nodes from start to end node,
+    return dist: total distance of the path
+    type path: list
+    type dist: float
     
     
     """
@@ -177,7 +195,7 @@ def find_shortest_path(graph, start_node, end_node):
 if __name__ == '__main__':
 
     """ Settings: """
-    SCENARIO = '1'  # '1' ,'2' or '3' for sample, hungary or germany respectively
+    SCENARIO = '3'  # '1' ,'2' or '3' for sample, hungary or germany respectively
     SPEED = 'fast'  # can be 'slow' or 'fast'
 
     if SCENARIO == '1':
