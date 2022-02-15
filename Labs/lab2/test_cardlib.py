@@ -92,6 +92,32 @@ def test_pokerhands():
     ph5 = h1.best_poker_hand(cl)
     # assert ph5 == PokerHand( <insert your handtype for a Full House and data here> )
 
-test_cards()
-test_deck()
-test_hand()
+def test_more_card_types():
+    """ testing More card types and their methods"""
+    pass
+
+def test_more_hands():
+    """ testing More hand methods """
+    pass
+
+def test_deck_further():
+    """ Further testing the deck and its methods"""
+    pass
+
+def test_pokerhands():
+    """ Testing Card combinations giving the different poker hands"""
+    pass
+
+def test_compare_pokerhands():
+    """ Comparison between different poker-hands """
+    pass
+
+def test_same_pokerhands():
+    """ Comparison between hands with card combinations giving the same poker hand, but different card values
+        for both the cards making up the poker hand (for example 2 kings in a pair of kings) and the remaining 3
+        cards 
+        
+        """
+    pass
+
+

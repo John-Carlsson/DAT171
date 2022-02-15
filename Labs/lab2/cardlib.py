@@ -234,7 +234,7 @@ def four_of_a_kind(cards):
         counts[values.count(v)] = v
     if 4 in counts.keys(): return HandType.four_of_a_kind, (counts[4], sorted(values,reverse=True))
 
-def full_house(cards = []):
+def full_house(cards):
     counts = dict()
     values = [x.get_value() for x in cards]
     for v in values:
@@ -245,7 +245,7 @@ def full_house(cards = []):
         two = counts[2]
         return HandType.full_house, ((three,two), sorted(values,reverse=True))
 
-def flush(cards = []):
+def flush(cards):
     suits = [x.get_suit() for x in cards]
     values = set(x.get_value() for x in cards)
     counts = []
