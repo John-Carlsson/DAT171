@@ -11,11 +11,11 @@ import math
 
 def read_coordinate_file(filename):
     """ Take input coordinates and remove unwanted characters, returns a np.array. Input should be a .txt file with each row looking like this: '{0., -1.}' 
-    param :filename: .txt file with rows like this '{0., -1.}
-    type filename: string
+    :param filename: .txt file with rows like this '{0., -1.}
+    :type filename: string
     
-    return coordinates: a list of list like this [[0. -1.], [2,3]]
-    type coordinates: np.array of np.arrays of two floats 
+    :return coordinates: a list of list like this [[0. -1.], [2,3]]
+    :type coordinates: np.array of np.arrays of two floats 
     """
     lista = []
     not_allowed = '{}'
@@ -35,21 +35,21 @@ def read_coordinate_file(filename):
 
 def plot_points(coord_list, indices, path):
     """ Function for plotting the map and the shortest path between two points
-    param coord_list: list of list of coordinates
-    type coord_list: np.array of np.arrays of two floats
+    :param coord_list: list of list of coordinates
+    :type coord_list: np.array of np.arrays of two floats
 
-    param indices: a list of lists with cities that connect
-    type indices: np.array of np.array of two integers
+    :param indices: a list of lists with cities that connect
+    :type indices: np.array of np.array of two integers
 
-    param path: A list of the shortest path of visited nodes from a to b
-    type path: list
+    :param path: A list of the shortest path of visited nodes from a to b
+    :type path: list
 
 
     
     
     
 
-    return: plots a graph
+    :return: plots a graph
     
     """
     plt.gca().set_aspect('equal')
@@ -83,18 +83,18 @@ def plot_points(coord_list, indices, path):
    
 def construct_graph_connections(coord_list, radius):
     """ Setup the graph connections within a given radius
-        param coord_list: np.array of np.array of floats like this [[x1,y1], [x2,y2]]
-        type coord_list: np.array of np.array of two floats
+        :param coord_list: np.array of np.array of floats like this [[x1,y1], [x2,y2]]
+        :type coord_list: np.array of np.array of two floats
 
-        param radius: a radius
-        type coord_list: int
+        :param radius: a radius
+        :type coord_list: int
 
         
-        return con: a list of indices which are within the given radius
-        type con: np.array of np arrays of two ints
+        :return con: a list of indices which are within the given radius
+        :type con: np.array of np arrays of two ints
 
-        return distance: the distance between the points
-        type distance: np.array of floats
+        :return distance: the distance between the points
+        :type distance: np.array of floats
     """
     con = []
     distance = []
@@ -111,17 +111,17 @@ def construct_graph_connections(coord_list, radius):
 def construct_fast_graph_connections(coord_list, radius):
     """ Setup the graph connections within a given radius
 
-    param coord_list: np.array of np.array of floats like this [[x1,y1], [x2,y2]]
-    type coord_list: np.array of np.array of two floats
+    :param coord_list: np.array of np.array of floats like this [[x1,y1], [x2,y2]]
+    :type coord_list: np.array of np.array of two floats
 
-    param radius: a radius
-    type coord_list: int
+    :param radius: a radius
+    :type radius: int
     
-    return con: a list of indices which are within the given radius
-    type con: np.array of np arrays of two ints
+    :return con: a list of indices which are within the given radius
+    :type con: np.array of np arrays of two ints
 
-    return distance: the distance between the points
-    type distance: np.array of floats
+    :return distance: the distance between the points
+    :type distance: np.array of floats
     """
     tree = cKDTree(coord_list)
     distance = []
@@ -132,25 +132,25 @@ def construct_fast_graph_connections(coord_list, radius):
     for i, point in enumerate(points):
         for el in point:
             if el >= i:                                      #  Make a list of connections, since the graph is "undirected" there will
-                con.append(np.array([i, el]))                          #  only be one "road" between nodes since you can go both ways on the same road
+                con.append(np.array([i, el]))                #  only be one "road" between nodes since you can go both ways on the same road
 
     con_array = np.array(con)
-    conec = np.array([coord_list[con_array[:,0]], [coord_list[con_array[:,1]]]])
+    conec = [coord_list[con_array[:,0]], [coord_list[con_array[:,1]]]]
     distance = np.linalg.norm((conec[0]) - (conec[1]), axis=-1)
     
     return con_array, distance[0]
 
 def construct_graph(indices, distance, N):
     """ Construct the graph with indices and the distance between them 
-    param indices: list of indices
-    param distance: distance between indices
-    param N: The sixe of the matrix, also the length of the distance list
-    type indices: np.array
-    type distance: np.array
-    type N: int
+    :param indices: list of indices
+    :param distance: distance between indices
+    :param N: The sixe of the matrix, also the length of the distance list
+    :type indices: np.array
+    :type distance: np.array
+    :type N: int
 
-    return: a sparse matrix where the indexes are the cities and the values at their location is the distance between them
-    type value: csr_matrix
+    :return: a sparse matrix where the indexes are the cities and the values at their location is the distance between them
+    :type value: csr_matrix
     """
     
     indices = indices.T
@@ -161,18 +161,18 @@ def construct_graph(indices, distance, N):
 def find_shortest_path(graph, start_node, end_node):
     """ Uses a graph, a start and an end node to find the shortest path using the csgraph.shortest path function 
 
-    param graph: a graph
-    param start_node: start node
-    param end node: end node
+    :param graph: a graph
+    :param start_node: start node
+    :param end node: end node
 
-    type graph: csr_matrix
-    type start_node: int
-    type end_node: int
+    :type graph: csr_matrix
+    :type start_node: int
+    :type end_node: int
 
-    return path: a list of visited nodes from start to end node,
-    return dist: total distance of the path
-    type path: list
-    type dist: float
+    :return path: a list of visited nodes from start to end node,
+    :return dist: total distance of the path
+    :type path: list
+    :type dist: float
     
     
     """
@@ -211,7 +211,7 @@ if __name__ == '__main__':
         END_NODE = 10584
 
     """ Read coordinates """
-    print(f'Filnamn: {FILENAME}')
+    print(f'Filename: {FILENAME}')
     start = time.time()
     coordinates = read_coordinate_file(FILENAME)
     end = time.time()
@@ -258,5 +258,8 @@ if __name__ == '__main__':
     """ Plot """
     func5 = func1+func2+func22+func3+func4
     print(f'Time to run program excluding plotting: {func5:3.5f} seconds.')
+    start = time.time()
     plot_points(coordinates, connections, path)
+    end = time.time()
+    print(f'Time to plot: {end-start:3.5f} seconds.')
     plt.show()
