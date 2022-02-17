@@ -11,7 +11,7 @@ import math
 
 def read_coordinate_file(filename):
     """ Take input coordinates and remove unwanted characters, returns a np.array. Input should be a .txt file with each row looking like this: '{0., -1.}' 
-    param filenmae: .txt file with rows like this '{0., -1.}
+    param :filename: .txt file with rows like this '{0., -1.}
     type filename: string
     
     return coordinates: a list of list like this [[0. -1.], [2,3]]
@@ -79,7 +79,7 @@ def plot_points(coord_list, indices, path):
     coord_list = np.flip(coord_list)
     ax.scatter(coord_list[:,0],coord_list[:,1], s=5, color='red')
     
-    plt.show()
+    
    
 def construct_graph_connections(coord_list, radius):
     """ Setup the graph connections within a given radius
@@ -259,4 +259,4 @@ if __name__ == '__main__':
     func5 = func1+func2+func22+func3+func4
     print(f'Time to run program excluding plotting: {func5:3.5f} seconds.')
     plot_points(coordinates, connections, path)
-
+    plt.show()

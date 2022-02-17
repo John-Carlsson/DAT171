@@ -1,0 +1,21 @@
+
+Welcome to Cardlib's documentation!
+===================================
+
+Bla bla bla, texas hold'em
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+..   :automodule:: cardlib
+   :members: 
+   :show-inheritance:
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

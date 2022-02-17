@@ -6,11 +6,11 @@ from random import shuffle
 
 
 class PlayingCard(metaclass=ABCMeta):
-    """_summary_
+    """
     A class for the playingcards in a standard deck of 52 cards
 
     Args:
-        metaclass (_type_, optional): _description_. Defaults to ABCMeta.
+        metaclass:  Defaults to ABCMeta.
     """
     def __init__(self,suit):
         self.suit = suit
@@ -50,6 +50,7 @@ class Suit(enum.IntEnum):
     Diamonds = 3
 
 class NumberedCard(PlayingCard):
+    
     """ A class for the numbered playingcards in a deck of cards """
     
     def __init__(self, value, suit):
@@ -178,6 +179,7 @@ class StandardDeck:
     
     """ Draw the top card from the deck"""
     def draw(self):
+        if len(self.deck) == 0: return 'inga kort kvar'
         return self.deck.pop()
         
 class HandType(enum.IntEnum):
@@ -220,7 +222,7 @@ def royal_flush(cards):
         if (c[0].get_value() - k, c[0].get_suit()) not in values:
             found_straight = False
     if found_straight:
-        return HandType.royal_flush, cardvalues
+        return HandType.royal_flush, sorted(cards,reverse=True)
     
 def straight_flush(cards):
     """
@@ -231,9 +233,6 @@ def straight_flush(cards):
     
     values = [(x.get_value(), x.get_suit()) for x in cards] \
         +[(1, x.suit) for x in cards if x.get_value() == 14] # Add the aces value 1!
-
-    cardvalues = [x.get_value() for x in cards]
-
     for c in reversed(sorted(cards)): # Starting point (high card)
         # Check if we have the value - k in the set of cards:
         found_straight = True
@@ -242,7 +241,7 @@ def straight_flush(cards):
                 found_straight = False
 
         if found_straight:
-            return HandType.straight_flush, sorted(cardvalues,reverse=True)
+            return HandType.straight_flush, sorted(cards,reverse=True)
 
 def four_of_a_kind(cards):
     """ A function checking if a four of kind can be made with the given cards
@@ -258,7 +257,7 @@ def four_of_a_kind(cards):
     values = [x.get_value() for x in cards]
     for v in values:
         counts[values.count(v)] = v
-    if 4 in counts.keys(): return HandType.four_of_a_kind, (counts[4], sorted(values,reverse=True))
+    if 4 in counts.keys(): return HandType.four_of_a_kind, (counts[4], sorted(cards,reverse=True))
 
 def full_house(cards):
     """ A function checking if a full house can be made with the given cards
@@ -278,7 +277,7 @@ def full_house(cards):
     if (3 in counts.keys()) and (2 in counts.keys()): 
         three = counts[3]
         two = counts[2]
-        return HandType.full_house, ((three,two), sorted(values,reverse=True))
+        return HandType.full_house, ((three,two), sorted(cards,reverse=True))
 
 def flush(cards):
     suits = [x.get_suit() for x in cards]
@@ -286,7 +285,7 @@ def flush(cards):
     counts = []
     for s in suits:
         counts.append(suits.count(s))
-    if 5 in counts: return HandType.flush, sorted(values,reverse=True)
+    if 5 in counts: return HandType.flush, sorted(cards,reverse=True)
    
 def straight(cards):
     values = set(x.get_value() for x in cards) # sort an take out duplicates to check if you can make a straight
@@ -301,14 +300,14 @@ def straight(cards):
             check_straight = 1
             continue
         check_straight += 1
-        if check_straight == 5: return HandType.straight, sorted(values,reverse=True)
+        if check_straight == 5: return HandType.straight, sorted(cards,reverse=True)
     
 def three_of_a_kind(cards):
     counts = dict()
     values = [x.get_value() for x in cards]
     for v in values:
         counts[values.count(v)] = v
-    if 3 in counts.keys(): return HandType.three_of_a_kind, (counts[3],sorted(values,reverse=True))
+    if 3 in counts.keys(): return HandType.three_of_a_kind, (counts[3],sorted(cards,reverse=True))
 
 def two_pairs(cards):
     pair_list = set()
@@ -320,7 +319,7 @@ def two_pairs(cards):
             if v == values[n]:
                 pair_list.add(v)
     
-    if len(pair_list) == 2: return HandType.two_pairs, (sorted(pair_list,reverse=True),sorted(values,reverse=True))
+    if len(pair_list) == 2: return HandType.two_pairs, (sorted(pair_list,reverse=True),sorted(cards,reverse=True))
 
 def pair(cards):
     pair_list = set()
@@ -332,11 +331,10 @@ def pair(cards):
             if v == values[n]:
                 pair_list.add(v)
     
-    if pair_list: return HandType.pair, sorted(values,reverse=True)
+    if pair_list: return HandType.pair, sorted(cards,reverse=True)
     
 def high_card(cards):
-    values = [x.get_value() for x in cards]
-    return HandType.high_Card, values.sort(reverse=True)
+    return HandType.high_Card, sorted(cards,reverse=True)
 
 class PokerHand:
     

@@ -1,4 +1,3 @@
-from ast import Assert
 import pytest
 from enum import Enum
 from cardlib import *
@@ -92,13 +91,13 @@ def test_pokerhands():
     ph5 = h1.best_poker_hand(cl)
     # assert ph5 == PokerHand( <insert your handtype for a Full House and data here> )
 
+# Test more cardtypes
 def test_more_card_types():
     """ testing More card types and their methods"""
     hace = AceCard(Suit.Hearts)
     c6 = NumberedCard(6,Suit.Clubs)
     h6 = NumberedCard(6,Suit.Hearts)
     
-    print(hace.get_suit().name)
     assert hace.get_suit().name == 'Hearts'
     assert hace.get_suit().value == 0
     assert hace.get_value() == 14
@@ -113,7 +112,10 @@ def test_more_card_types():
     assert c6 != h6 # Check so that to cards with the same value but different suit is not worth the same
     assert str(c6) == '6 of Clubs' # Check so that it prints correctly
     
-    
+
+# This test further tests the deck and the cards within it, 
+# such as making sure the cards are no longer in the deck, that the correct number of cards are drawn
+# and if the deck is empty and a message is returned
 def test_deck_further():
     """ Further testing the deck and its methods"""
     deck = StandardDeck()
@@ -125,12 +127,26 @@ def test_deck_further():
     for i in deck.deck:
         assert i in deck2.deck # Check so all cards are in the deck 
 
+    p1 = Hand()
     for i in range(10):
-        deck.draw()
+        p1.add_card(deck.draw())
 
     assert len(deck.deck) < len(deck2.deck) # Check so that cards are drawn
+    for card in p1.cards:
+        assert card not in deck.deck # Check so that drawn cards are not in the deck anymore
+
     assert len(deck.deck) == (52-10) # Check so that the correct number of cards are drawn
 
+    for i in range(42):
+        deck.draw()
+    assert deck.draw() == 'inga kort kvar' # Check so that when no cards are left it returns something else
+
+
+# This test builds on the assumptions above and assumes you store the cards in the hand in the list "cards",
+# and that your sorting method is called "sort" and sorts in increasing order
+# The test checks so that cards are correctly drawn and added to the hand
+# and that dropping cards are limited to the hand size and that the same index "dropped" twice does not remove two cards, only one at the index
+# Checks so that a PokerHand object is created when the best_poker_hand method is called
 def test_more_hands():
     """ testing More hand methods """
     deck = StandardDeck()
@@ -150,33 +166,77 @@ def test_more_hands():
     assert p1.drop_cards([len(p1.cards)]) == 'Too few cards in hand' # Make sure you can't drop a card thats out of index
     
     p1_best = p1.best_poker_hand()
-    assert p1_best.best_hand in HandType and isinstance(p1_best.best_hand,HandType)# Make sure that a HanType can be created and that its of the correct Type
+    assert p1_best.best_hand in HandType and isinstance(p1_best.best_hand,HandType) # Make sure that a HandType can be created and that its of the correct Type
 
-
-    deck2 = StandardDeck()
-    p3 = Hand()
-    p4 = Hand()
-    for i in range(26): # Draw all cards from the top of the deck
-        p3.add_card(deck2.draw())
-        p4.add_card(deck2.draw())
-
-    for i in p3.cards: # Check so that no cards show up twice
-        assert i not in p4.cards
-
+# Testing Card combinations giving different or the same pokerhands
 def test_pokerhands():
-    """ Testing Card combinations giving the different poker hands"""
-    pass
+    p1 = Hand()
+    p2 = Hand()
+
+    p1.add_card(NumberedCard(2,Suit.Diamonds))
+    p1.add_card(AceCard(Suit.Diamonds))
+    p2.add_card(AceCard(Suit.Clubs))
+    p2.add_card(NumberedCard(2,Suit.Clubs))
+
+    assert p1.best_poker_hand() > p2.best_poker_hand() # Check so that if the same pokerhand is compared, the Suit of the highest card decide who wins
+
+    table = Hand()
+    table.add_card(AceCard(Suit.Spades))
+    table.add_card(NumberedCard(6,Suit.Clubs))
+    table.add_card(NumberedCard(2,Suit.Hearts))
+    table.add_card(NumberedCard(2,Suit.Diamonds))
+    p1.sort()
+    p1.drop_cards([0])
+    p1.add_card(AceCard(Suit.Hearts))
+
+    assert p1.best_poker_hand(table.cards) > p2.best_poker_hand(table.cards) # Check so that a full house of 3 aces and two 2's are better than a three of a kind of twos 
 
 def test_compare_pokerhands():
     """ Comparison between different poker-hands """
+    
+    
+    
     pass
 
 def test_same_pokerhands():
+
     """ Comparison between hands with card combinations giving the same poker hand, but different card values
         for both the cards making up the poker hand (for example 2 kings in a pair of kings) and the remaining 3
         cards 
-        
         """
-    pass
+    p1 = Hand()
+    p2 = Hand()
+    table = Hand()
+    p1.add_card(KingCard(Suit.Diamonds))
+    p1.add_card(KingCard(Suit.Hearts))
 
-test_more_hands()
+    p2.add_card(QueenCard(Suit.Diamonds))
+    p2.add_card(QueenCard(Suit.Diamonds))
+
+    assert p1.best_poker_hand() > p2.best_poker_hand() # Check so that pairs work
+
+    table.add_card(NumberedCard(4,Suit.Spades))
+    table.add_card(NumberedCard(4,Suit.Clubs))
+    assert p1.best_poker_hand(cards = table.cards) > p2.best_poker_hand(cards = table.cards)
+
+    p1.drop_cards([0])
+    p2.drop_cards([0])
+    p1.add_card(NumberedCard(4,Suit.Hearts))
+    p2.add_card(NumberedCard(4,Suit.Diamonds))
+
+    table.add_card(KingCard(Suit.Spades))
+    table.add_card(NumberedCard(4,Suit.Spades))
+    table.add_card(NumberedCard(4,Suit.Clubs))
+
+    p1 = Hand()
+    p2 = Hand()
+    table = Hand()
+    p1.add_card(NumberedCard(4,Suit.Hearts))
+    p1.add_card(NumberedCard(2,Suit.Hearts))
+    p2.add_card(NumberedCard(4,Suit.Diamonds))
+    p2.add_card(NumberedCard(2,Suit.Diamonds))
+    table.add_card(NumberedCard(4,Suit.Spades))
+    table.add_card(NumberedCard(4,Suit.Clubs))
+    table.add_card(NumberedCard(2,Suit.Clubs))
+    assert p2.best_poker_hand(table.cards) > p1.best_poker_hand(table.cards) # Chekc so that two full houses with the exact same values check for suit
+    

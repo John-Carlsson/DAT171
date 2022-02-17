@@ -17,12 +17,12 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'CA2'
-copyright = '2022, John Carlsson & Derin Ismail '
-author = 'John Carlsson, Derin Ismail'
+project = 'Cardlib'
+copyright = '2022, John'
+author = 'John'
 
 # The full version, including alpha/beta/rc tags
-release = '2022-02-20'
+release = '2022'
 
 
 # -- General configuration ---------------------------------------------------
