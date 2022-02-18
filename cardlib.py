@@ -53,13 +53,14 @@ class Suit(enum.IntEnum):
 
 class NumberedCard(PlayingCard):
     
-    """ A class for the numbered playingcards in a deck of cards """
+    """ A class for the numbered playingcards in a deck of cards, value can be between 2 and 10 """
     
     def __init__(self, value, suit):
         """Args:    
         :suit: A Suit type object for one of the suits in the deck
         """
         super().__init__(suit)
+        if value>10 or value<2: return 'Min value is 2 and max value is 10'
         self.value = value
     
     def __str__(self):
@@ -274,14 +275,14 @@ def straight_flush(cards):
             return HandType.straight_flush, sorted(cards,reverse=True)
 
 def four_of_a_kind(cards):
-    """ A function checking if a four of kind can be made with the given cards
+    """ 
+    A function checking if a four of kind can be made with the given cards
 
     Args:
-        :cards: A list of PlayingCard objects
-
+    :cards: A list of PlayingCard objects
     Returns:
-        :HandType:, :tuple: A Handtype for the pokerhand and a a tuple of the card thats a four of a kind and a
-         list of all the cards in the hand in falling order
+    :tuple: A Handtype for the pokerhand and a a tuple of the card thats a four of a kind and a
+    list of all the cards in the hand in falling order
     """
     counts = dict()
     values = [x.get_value() for x in cards]
@@ -290,14 +291,15 @@ def four_of_a_kind(cards):
     if 4 in counts.keys(): return HandType.four_of_a_kind, (counts[4], sorted(cards,reverse=True))
 
 def full_house(cards):
-    """ A function checking if a full house can be made with the given cards
+    """ 
+    A function checking if a full house can be made with the given cards
 
     Args:
-        :param cards: A list of PlayingCard objects
+    :cards: A list of PlayingCard objects
 
     Returns:
-        :HandType:, :tuple: A Handtype for the pokerhand and a a tuple of the cards that make up the full house and a
-        list of all the cards in the hand in falling order
+    :tuple: A Handtype for the pokerhand and a a tuple of the cards that make up the full house and a
+    list of all the cards in the hand in falling order
     """
     counts = dict()
     values = [x.get_value() for x in cards]
@@ -309,14 +311,15 @@ def full_house(cards):
         two = counts[2]
         return HandType.full_house, ((three,two), sorted(cards,reverse=True))
 
-def flush(cards)-> list: # Måste göra om denna!!!
+def flush(cards):
     """ A function checking if a flush can be made with the given cards
-Args:
-    :param cards: A list of PlayingCard objects
-Returns:
-    :HandType:, :tuple: A Handtype for the pokerhand and a
+    Args:
+    :cards: A list of PlayingCard objects
+
+    Returns:
+    :tuple: A Handtype for the pokerhand and a
     list of the cards making up the flush in falling order
-"""
+    """
     card_list = [x.get_suit() for x in cards]
     
     counts = dict()
@@ -331,12 +334,13 @@ Returns:
    
 def straight(cards):
     """ A function checking if a straight can be made with the given cards
-Args:
-    :param cards: A list of PlayingCard objects
-Returns:
-    :HandType:, :tuple: A Handtype for the pokerhand and a
+    Args:
+    :cards: A list of PlayingCard objects
+
+    Returns:
+    :tuple: A Handtype for the pokerhand and a
     list of all the cards in the hand in falling order
-"""
+    """
     values = set(x.get_value() for x in cards) # sort an take out duplicates to check if you can make a straight
     values = list(values)
     if 14 in values: # If you have an ace you need to add the value 1
@@ -353,12 +357,13 @@ Returns:
     
 def three_of_a_kind(cards):
     """ A function checking if three of a kind can be made with the given cards
-Args:
-    :param cards: A list of PlayingCard objects
-Returns:
-    :HandType:, :tuple: A Handtype for the pokerhand and a a tuple of the value fpr the three of a kind and a
+    Args:
+    :cards: A list of PlayingCard objects
+
+    Returns:
+    :tuple: A Handtype for the pokerhand and a a tuple of the value fpr the three of a kind and a
     list of all the cards in the hand in falling order
-"""
+    """
     counts = dict()
     values = [x.get_value() for x in cards]
     for v in values:
@@ -367,12 +372,12 @@ Returns:
 
 def two_pairs(cards):
     """ A function checking if two pairs can be made with the given cards
-Args:
-    :param cards: A list of PlayingCard objects
-Returns:
-    :HandType:, :tuple: A Handtype for the pokerhand and a tuple of the value of the pairs and a
+    Args
+    :cards: A list of PlayingCard objects
+    Return:
+    :tuple: A Handtype for the pokerhand and a tuple of the value of the pairs and a
     list of all the cards in the hand in falling order
-"""
+    """
     pair_list = set()
     values = [x.get_value() for x in cards]
     if 14 in values:
@@ -386,12 +391,12 @@ Returns:
 
 def pair(cards):
     """ A function checking if a pair can be made with the given cards
-Args:
+    Args:
     :param cards: A list of PlayingCard objects
-Returns:
+    Returns:
     :HandType:, :tuple: A Handtype for the pokerhand and a tuple of the value of the pair and a
     list of all the cards in the hand in falling order
-"""
+    """
     counts = dict()
     values = [x.get_value() for x in cards]
     for v in values:
@@ -404,12 +409,12 @@ Returns:
     
 def high_card(cards):
     """ A function checking if a pair can be made with the given cards
-Args:
-    :param cards: A list of PlayingCard objects
-Returns:
-    :HandType:, :tuple: A Handtype for the pokerhand  and a
+    Args:
+    :cards: A list of PlayingCard objects
+    Returns:
+    :tuple: A Handtype for the pokerhand  and a
     list of all the cards in the hand in falling order
-"""
+    """
     return HandType.high_Card, sorted(cards,reverse=True)
 
 class PokerHand:
