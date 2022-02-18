@@ -189,32 +189,64 @@ def test_pokerhands():
     p1.drop_cards([0])
     p1.add_card(AceCard(Suit.Hearts))
 
+    assert isinstance(p1.best_poker_hand(), PokerHand)
     assert p1.best_poker_hand(table.cards) > p2.best_poker_hand(table.cards) # Check so that a full house of 3 aces and two 2's are better than a three of a kind of twos 
 
-# COompare
-def test_compare_pokerhands():°
-    """ Comparison between different poker-hands """
+# Compare
+def test_compare_pokerhands():
+    """ Comparison between different pokerhands """
+    pair = Hand()
+    pair.add_card(NumberedCard(10,Suit.Diamonds))
+    pair.add_card(NumberedCard(10,Suit.Hearts))
 
-    for pokerhand in HandType:
+    three = Hand()
+    three.add_card(NumberedCard(7,Suit.Diamonds))
+    three.add_card(NumberedCard(7,Suit.Hearts))
+    three.add_card(NumberedCard(7,Suit.Spades))
     
-        print(pokerhand.value)
+    four = Hand()
+    four.add_card(NumberedCard(5,Suit.Diamonds))
+    four.add_card(NumberedCard(5,Suit.Hearts))
+    four.add_card(NumberedCard(5,Suit.Spades))
+    four.add_card(NumberedCard(5,Suit.Clubs))
+
+    assert four.best_poker_hand() > three.best_poker_hand() 
+    assert three.best_poker_hand() > pair.best_poker_hand()
+
+    four2 = Hand()
+    four2.add_card(NumberedCard(6,Suit.Diamonds))
+    four2.add_card(NumberedCard(6,Suit.Hearts))
+    four2.add_card(NumberedCard(6,Suit.Spades))
+    four2.add_card(NumberedCard(6,Suit.Clubs))
+
+    assert four2.best_poker_hand() > four.best_poker_hand()
+
+    p1 = Hand()
+    p2 = Hand()
+    p1.add_card(NumberedCard(2,Suit.Diamonds))
+    p1.add_card(AceCard(Suit.Diamonds))
+    p2.add_card(AceCard(Suit.Clubs))
+    p2.add_card(NumberedCard(2,Suit.Clubs))
+
+    table = Hand()
+    table.add_card(AceCard(Suit.Spades))
+    table.add_card(NumberedCard(6,Suit.Clubs))
+    table.add_card(NumberedCard(2,Suit.Hearts))
+    table.add_card(NumberedCard(2,Suit.Diamonds))
+    p1.sort()
+    p1.drop_cards([0])
+    p1.add_card(AceCard(Suit.Hearts))
+    assert isinstance(p1.best_poker_hand(), PokerHand)
+    assert p1.best_poker_hand(table.cards) > p2.best_poker_hand(table.cards) # Check so that a full house of 3 aces and two 2's are better than a three of a kind of twos 
+
 
     
-    
-    
-    
-
-    
-
-
-
-
 def test_same_pokerhands():
-
-    """ Comparison between hands with card combinations giving the same poker hand, but different card values
-        for both the cards making up the poker hand (for example 2 kings in a pair of kings) and the remaining 3
-        cards 
-        """
+    """ 
+    Comparison between hands with card combinations giving the same poker hand, but different card values
+    for both the cards making up the poker hand (for example 2 kings in a pair of kings) and the remaining 3
+    cards 
+    """
     p1 = Hand()
     p2 = Hand()
     table = Hand()
@@ -223,6 +255,7 @@ def test_same_pokerhands():
 
     p2.add_card(QueenCard(Suit.Diamonds))
     p2.add_card(QueenCard(Suit.Diamonds))
+
 
     assert p1.best_poker_hand() > p2.best_poker_hand() # Check so that pairs work
 
@@ -267,5 +300,4 @@ def test_same_pokerhands():
     # Here i take in to account that the highest card in the flush determines who win and not highest card over all.
     assert p1.best_poker_hand(table.cards) > p2.best_poker_hand(table.cards)
 
-
-test_compare_pokerhands()
+    
