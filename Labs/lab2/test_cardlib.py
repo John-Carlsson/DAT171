@@ -193,10 +193,29 @@ def test_pokerhands():
 
 def test_compare_pokerhands():
     """ Comparison between different poker-hands """
+    p1 = Hand()
+    p2 = Hand()
+    table = Hand()
+
+    table.add_card(NumberedCard(2,Suit.Diamonds))
+    table.add_card(NumberedCard(7,Suit.Diamonds))
+    table.add_card(NumberedCard(8,Suit.Diamonds))
+    table.add_card(NumberedCard(3,Suit.Diamonds))
+
+    p1.add_card(JackCard(Suit.Diamonds))
+    p1.add_card(NumberedCard(10,Suit.Spades))
+
+    p2.add_card(NumberedCard(3,Suit.Diamonds))
+    p2.add_card(KingCard(Suit.Spades))
+   
+    # Here player 1 has a flush with his highest card of the suit being a Jack,
+    # player 2 has a flush with the highest vard of the suit being a 8 on table but has a king on hand
+    # Here i take in to account that the highest card in the flush determines who win and not highest card over all.
+    assert p1.best_poker_hand(table.cards) > p2.best_poker_hand(table.cards)
     
     
     
-    pass
+    
 
 def test_same_pokerhands():
 
