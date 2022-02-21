@@ -300,4 +300,22 @@ def test_same_pokerhands():
     # Here i take in to account that the highest card in the flush determines who win and not highest card over all.
     assert p1.best_poker_hand(table.cards) > p2.best_poker_hand(table.cards)
 
-    
+    p3 = Hand()
+    p4 = Hand()
+    table.drop_cards([0,1,2,3,4])
+    table = Hand()
+    p3.add_card(NumberedCard(2,Suit.Diamonds))
+    p3.add_card(NumberedCard(6,Suit.Hearts))
+    p4.add_card(NumberedCard(2,Suit.Spades))
+    p4.add_card(NumberedCard(6,Suit.Diamonds))
+    table.add_card(NumberedCard(3,Suit.Diamonds))
+    table.add_card(NumberedCard(4,Suit.Hearts))
+    table.add_card(NumberedCard(5,Suit.Spades))
+    table.add_card(NumberedCard(9,Suit.Diamonds))
+    print(p4.cards < p3.cards)
+    p3.sort()
+    p4.sort()
+    print(p4.cards < p3.cards)
+    print(p4, p3)
+    assert p4.best_poker_hand(table.cards) > p3.best_poker_hand(table.cards)
+

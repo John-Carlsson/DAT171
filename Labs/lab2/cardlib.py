@@ -4,6 +4,7 @@ from abc import ABCMeta, abstractmethod
 import enum
 from random import shuffle
 
+
 class PlayingCard(metaclass=ABCMeta):
     """
     A class for the playingcards in a standard deck of 52 cards
@@ -474,6 +475,7 @@ def three_of_a_kind(cards):
     if 3 in counts.keys(): return HandType.three_of_a_kind, (counts[3],sorted(cards,reverse=True))
 
 def two_pairs(cards):
+    # Kommer behöver fixa så att tre par kan existera
     """ A function checking if two pairs can be made with the given cards
     Args
     :cards: A list of PlayingCard objects
@@ -551,13 +553,17 @@ if __name__ == '__main__':
         texas.shuffle()
 
         p1 = Hand()
-        p1.add_card(NumberedCard(2,Suit.Hearts))
-        p1.add_card(NumberedCard(3,Suit.Hearts))
+        p2 = Hand()
+        table = Hand()
+        p1.add_card(NumberedCard(2,Suit.Diamonds))
         p1.add_card(NumberedCard(4,Suit.Hearts))
-        p1.add_card(NumberedCard(6,Suit.Hearts))
-        p1.add_card(NumberedCard(7,Suit.Hearts))
-        p1.add_card(NumberedCard(9,Suit.Hearts))
-        print(p1.best_poker_hand())
+
+        p2.add_card(NumberedCard(3,Suit.Hearts))
+        p2.add_card(NumberedCard(4,Suit.Spades))
+
+        # table.add_card(NumberedCard(7,Suit.Hearts))
+        # table.add_card(NumberedCard(9,Suit.Hearts))
+        print(p1.best_poker_hand() < p2.best_poker_hand())
         # 
         # p1 = Hand()
         # p2 = Hand()
