@@ -5,7 +5,6 @@ from PyQt5.QtWidgets import *
 from abc import abstractmethod
 import sys
 from cardlib import *
-
 # NOTE: This is just given as an example of how to use CardView.
 # It is expected that you will need to adjust things to make a game out of it. 
 
@@ -26,11 +25,14 @@ class CardModel(QObject):
     def flipped(self):
         """Returns true of cards should be drawn face down"""
 
+
+# A trivial card class (you should use the stuff you made in your library instead!
+
 # We can extend this class to create a model, which updates the view whenever it has changed.
 # NOTE: You do NOT have to do it this way.
 # You might find it easier to make a Player-model, or a whole GameState-model instead.
 # This is just to make a small demo that you can use. You are free to modify
-class PlayerModel(Hand, CardModel):
+class HandModel(Hand, CardModel):
     def __init__(self):
         Hand.__init__(self)
         CardModel.__init__(self)
@@ -95,7 +97,7 @@ class CardView(QGraphicsView):
     back_card = QSvgRenderer('cards/Red_Back_2.svg')
     all_cards = read_cards()
 
-    def __init__(self, card_model: CardModel, card_spacing: int = 150, padding: int = 10):
+    def __init__(self,card_model: CardModel, card_spacing: int = 250, padding: int = 10):
         """
         Initializes the view to display the content of the given model
         :param cards_model: A model that represents a set of cards. Needs to support the CardModel interface.
@@ -158,13 +160,7 @@ class CardView(QGraphicsView):
         self.update_view()
         super().resizeEvent(painter)
 
-
-class PlayerView(CardView, PlayerModel):
-        pass
-        
-
-
- # This is the Controller part of the GUI, handling input events that modify the Model
+    # This is the Controller part of the GUI, handling input events that modify the Model
     # def mousePressEvent(self, event):
     #    # We can check which item, if any, that we clicked on by fetching the scene items (neat!)
     #    pos = self.mapToScene(event.pos())
@@ -181,34 +177,17 @@ class PlayerView(CardView, PlayerModel):
 ###################
 # Main test program
 ###################
+
 # Lets test it out
 app = QApplication(sys.argv)
-deck = StandardDeck()
-deck.shuffle()
-
-hand1 = PlayerModel()
-hand1.add_card(deck.draw())
-hand1.add_card(deck.draw())
-card_view1 = CardView(hand1)
-
-
-
-
-window = QWidget()
-w = 800
-h = 600
-window.setWindowTitle('PyQt5 App')
-window.setGeometry(10, 10, w, h)
-window.move(100, 15)
-helloMsg = QLabel('<h1>Hello World!</h1>', parent=window)
-helloMsg.move(int(w/2), int(h/2))
-box = QHBoxLayout(window)
-
-box.addWidget(card_view1)
-
+hand = HandModel()
+card_view = CardView(hand)
 
 # Creating a small demo window to work with, and put the card_view inside:
+box = QVBoxLayout()
+box.addWidget(card_view)
+player_view = QGroupBox("Player 1")
+player_view.setLayout(box)
+player_view.show()
 
-
-window.show()
 app.exec_()
