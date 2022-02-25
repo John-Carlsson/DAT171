@@ -5,14 +5,5 @@ from PyQt5.QtWidgets import *
 import sys
 
 
-
-app = QApplication(sys.argv)
-
-box = QVBoxLayout()
-box.addWidget()
-box.addWidget()
-player_view = QGroupBox("Player 1")
-player_view.setLayout(box)
-player_view.show()
-
-app.exec_()
+l = [x for x in range(0,len([1,1,1,1]))]
+print(l)

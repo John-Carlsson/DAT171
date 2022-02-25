@@ -1,62 +1,20 @@
-from signal import signal
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtSvg import *
 from PyQt5.QtWidgets import *
 import sys
 
-
-qt_app = QApplication.instance()
-class TexasHoldEm(QObject):
-    
-    cash_signal = pyqtSignal()
-    winner = pyqtSignal((str,))
-    total_pot_signal = pyqtSignal()
-    current_pot_signal = pyqtSignal()
-    
-    def __init__(self):
-        super().__init__() # Don't forget super init when inheriting!
-        self.players = ['Player1', 'Player2']
-        self.cash = dict()
-        self.total_pot = 0
-        self.current_pot = 0
-
-        for player in self.players: # Give players money
-            self.cash[player] = 100
-        
-        self.active_player = self.players[0]
-    
-
-    def bet_click(self, amount): # Fixa till det här
-        prev = self.cash[self.active_player]
-        self.cash[self.active_player] =- amount+prev
-        self.cash_signal.emit()
-        self.current_pot =+ amount+prev
-        
-        self.total_pot =+ amount
-        self.total_pot_signal.emit()
-
-
-    
-    def passing(self):
-        pass
-
-    def fold(self):
-        pass
-
-    def call(self):
-        pass
-        
-    def end_turn(self):
-
-        if self.active_player == self.players[0]: self.active_player = self.players[1]
-        else: self.active_player = self.players[0]
-        
+from Pokermodel import *
 
 
 class GameView(QWidget):
     def __init__(self, game_model):
         super().__init__()
+
+        self.rubrik = QLabel('Players:', parent=self)
+        self.rubrik.setAlignment(Qt.AlignRight)
+        self.rubrik.setStyleSheet("QLabel {font-size:20px;}")
+        self.setLayoutDirection(1)
         
         # The init method for views should always be quite familiar; it has a section for creating widgets
         # buttons = [QPushButton(game_model.players[0]), QPushButton(game_model.players[1])]
@@ -65,80 +23,61 @@ class GameView(QWidget):
             self.labels[game_model.players[i]] = QLabel(game_model.players[i] +'\t\t'+ str(game_model.cash[game_model.players[i]]))
 
         self.labels['pot'] = QLabel('Total pot' +'\t' + str(game_model.total_pot))
+        self.labels['current_bet'] = QLabel('Current bet' +'\t' + str(game_model.current_bet))
+        
         # then arranging them in the desired layout
         vbox = QVBoxLayout()
+        # vbox.setGeometry(QRect.bottomRight())
         for label in self.labels.values():
             vbox.addWidget(label)
         
         bet_button = QPushButton('Bet')
         bet_scale = QSpinBox()
-        pass_button = QPushButton('Pass')
+        bet_scale.setMaximum(game_model.cash[game_model.active_player])
         fold_button = QPushButton('Fold')
         call_button = QPushButton('Call')
-        end_turn_button = QPushButton('End turn')
+        end_turn_button = QPushButton('End turn/Pass')
 
-        buttons = [bet_scale, bet_button, pass_button, fold_button, call_button, end_turn_button]
+        buttons = [bet_scale, bet_button, fold_button, call_button, end_turn_button]
         for button in buttons:
             vbox.addWidget(button)
 
         self.setLayout(vbox)
-
-        # Controller part happens to be inside this widget as well application
-        # def player0_click(): game_model.player_click(0)
-        # buttons[0].clicked.connect(player0_click)
-        # 
-        # def player1_click(): game_model.player_click(1)
-
-        # buttons[1].clicked.connect(player1_click)
-        # reset_button.clicked.connect(game_model.reset)
-
-        
-        
-        
-        
-
-
         def bet_click():
             game_model.bet_click(bet_scale.value())
+            end_turn_click()
         
-        # def pass_click():
-            # game_model.bet_click()
-        
-        # def fold_click():
-            # game_model.bet_click(bet_scale.value())
+        def fold_click():
+            bet_scale.setValue(0)
+            game_model.fold_click()
 
-        # def call_click():
-            # game_model.bet_click(bet_scale.value())
+        def call_click():
+            game_model.call_click()
+            end_turn_click()
 
         def end_turn_click():
             game_model.end_turn_click()
-
-        
-        
+            bet_scale.setMaximum(game_model.cash[game_model.active_player])
+            bet_scale.setValue(0)
 
         bet_button.clicked.connect(bet_click)
-        pass_button.clicked.connect(game_model.passing)
-        fold_button.clicked.connect(game_model.fold)
-        call_button.clicked.connect(game_model.call)
-        end_turn_button.clicked.connect(game_model.end_turn)
+        fold_button.clicked.connect(fold_click)
+        call_button.clicked.connect(call_click)
+        end_turn_button.clicked.connect(end_turn_click)
         
         
         # almost always storing a reference to the related model
-        self.game = game_model
-
-    
+        self.game = game_model    
         # and connecting some method for updating the state to the corresponding signals
         game_model.total_pot_signal.connect(self.update_pot)
         game_model.cash_signal.connect(self.update_cash)
+        game_model.current_bet_signal.connect(self.update_current_bet)
 
 
         # game_model.winner.connect(self.alert_winner)
         # and giving it an initial update so that we show the initial state
         # self.update_labels()
-        
-        # This also happens to be the main window, so we can opt to show it immediately
-        # (we could also very well leave this up to the caller)
-        self.show()
+       
       
         
     def update_pot(self):
@@ -146,15 +85,147 @@ class GameView(QWidget):
     
     def update_cash(self):
         self.labels[self.game.active_player].setText(str(self.game.active_player) +'\t\t' + str(self.game.cash[self.game.active_player]))
+        self.labels[self.game.not_active_player].setText(str(self.game.not_active_player) +'\t\t' + str(self.game.cash[self.game.not_active_player]))
+       
+    def update_current_bet(self):
+        self.labels['current_bet'].setText('Current bet' +'\t' + str(self.game.current_bet))
+    
+   
+    hbox = QHBoxLayout()
 
-    def alert_winner(self, text: str):
-        msg = QMessageBox()
-        msg.setText(text)
-        msg.exec()
+
+### Här under görs bordet och korten till det
+
+
+
+
+
+
+
+###################
+# Card widget code:
+###################
+
+class TableScene(QGraphicsScene):
+    """ A scene with a table cloth background """
+    def __init__(self):
+        super().__init__()
+        self.tile = QPixmap('cards/table.png')
+        self.setBackgroundBrush(QBrush(self.tile))
+
+
+class CardItem(QGraphicsSvgItem):
+    """ A simple overloaded QGraphicsSvgItem that also stores the card position """
+    def __init__(self, renderer, position):
+        super().__init__()
+        self.setSharedRenderer(renderer)
+        self.position = position
+
+
+def read_cards():
+    """
+    Reads all the 52 cards from files.
+    :return: Dictionary of SVG renderers
+    """
+    all_cards = dict()  # Dictionaries let us have convenient mappings between cards and their images
+    for suit_file, suit in zip('HDSC', range(4)):  # Check the order of the suits here!!!
+        for value_file, value in zip(['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'], range(2, 15)):
+            file = value_file + suit_file
+            key = (value, suit)  # I'm choosing this tuple to be the key for this dictionary
+            all_cards[key] = QSvgRenderer('cards/' + file + '.svg')
+    return all_cards
+
+
+class PlayerView(QGraphicsView): 
+    """ A View widget that represents the table area displaying a players cards. """
+
+    # We read all the card graphics as static class variables
+    back_card = QSvgRenderer('cards/Red_Back_2.svg')
+    all_cards = read_cards()
+
+    def __init__(self, card_model: PlayerModel, card_spacing: int = 150, padding: int = 10):
+        """
+        Initializes the view to display the content of the given model
+        :param cards_model: A model that represents a set of cards. Needs to support the CardModel interface.
+        :param card_spacing: Spacing between the visualized cards.
+        :param padding: Padding of table area around the visualized cards.
+        """
+        self.scene = TableScene()
+        super().__init__(self.scene)
+
+        self.card_spacing = card_spacing
+        self.padding = padding
+
+        self.model = card_model
+        # Whenever the this window should update, it should call the "change_cards" method.
+        # This can, for example, be done by connecting it to a signal.
+        # The view can listen to changes:
+        # card_model.cards.connect(self.change_cards)
+        # It is completely optional if you want to do it this way, or have some overreaching Player/GameState
+        # call the "change_cards" method instead. z
+
+        # Add the cards the first time around to represent the initial state.
+        self.change_cards()
+
+    def change_cards(self):
+        # Add the cards from scratch
+        self.scene.clear()
+        for i, card in enumerate(self.model):
+            # The ID of the card in the dictionary of images is a tuple with (value, suit), both integers
+            graphics_key = (card.get_value(), card.suit)
+            renderer = self.back_card if self.model.flip() else self.all_cards[graphics_key]
+            c = CardItem(renderer, i)
+
+            # Shadow effects are cool!
+            shadow = QGraphicsDropShadowEffect(c)
+            shadow.setBlurRadius(10.)
+            shadow.setOffset(5, 5)
+            shadow.setColor(QColor(0, 0, 0, 180))  # Semi-transparent black!
+            c.setGraphicsEffect(shadow)
+
+            # Place the cards on the default positions
+            c.setPos(c.position * self.card_spacing, 0)
+            # We could also do cool things like marking card by making them transparent if we wanted to!
+            # c.setOpacity(0.5 if self.model.marked(i) else 1.0)
+            self.scene.addItem(c)
+
+        self.update_view()
+
+    def update_view(self):
+        scale = (self.viewport().height()-2*self.padding)/313
+        self.resetTransform()
+        self.scale(scale, scale)
+        # Put the scene bounding box
+        self.setSceneRect(-self.padding//scale, -self.padding//scale,
+                          self.viewport().width()//scale, self.viewport().height()//scale)
+
+    def resizeEvent(self, painter):
+        # This method is called when the window is resized.
+        # If the widget is resize, we gotta adjust the card sizes.
+        # QGraphicsView automatically re-paints everything when we modify the scene.
+        self.update_view()
+        super().resizeEvent(painter)
+
+
+class MainWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.box = QVBoxLayout() # Skapa stora rutan
+        self.game = TexasHoldEm() # Skapa spelet
+        game = self.game
+        player_box = QHBoxLayout() # Skapa en horizontel låda för att ha spelarnas kort i
+    
+        for player in game.players:    # Lägg till spelarna i rutan
+            playerview = PlayerView(player)
+            player_box.addWidget(playerview)
+
+        self.box.addWidget(player_box) # Lägga till i stora rutan. Detta funkar inte :( måste fråga om det
+        
+        self.show()
 
 
 qt_app = QApplication(sys.argv)
 qt_app = QApplication.instance()
-game = TexasHoldEm()
-view = GameView(game)
+main = MainWindow()
+
 qt_app.exec_()

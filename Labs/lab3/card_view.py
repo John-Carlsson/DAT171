@@ -159,8 +159,7 @@ class CardView(QGraphicsView):
         super().resizeEvent(painter)
 
 
-class PlayerView(CardView, PlayerModel):
-        pass
+
         
 
 
