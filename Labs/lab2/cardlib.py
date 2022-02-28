@@ -226,14 +226,25 @@ class Hand:
 
     
     def add_card(self, card):
-        """ Add cards to hand """
+        """ A method for adding a card to the hand
+
+        Args:
+            :card: A card from the standard deck
+        """
         self.cards.append(card)
         
     
     def drop_cards(self, index):
-        """ Drop one or several cards by index """
+        """ A method for dropping one or several cards by index
+
+        Args:
+            :index: A list of the indexs to be dropped from the hand
+
+        Raises:
+            :Exception: If the hand has too few cards, raise an Exception
+        """
         index = list(set(index)) # remove any duplicates from the list
-        if max(index) >= len(self.cards): return 'Too few cards in hand'
+        if max(index) >= len(self.cards): raise Exception('Too few cards in hand')
         
         index.sort(reverse=True)
        
@@ -277,7 +288,14 @@ class StandardDeck:
     
     
     def draw(self):
-        """ Draw the top card from the deck"""
+        """ Draw the top card from the deck
+
+        Raises:
+            :Exception: If there are no cards left in the deck, raise an Exception
+
+        Returns:
+            :PlayingCard: A playingcard from the deck
+        """
         if len(self.cards) == 0: raise Exception('inga kort kvar')
         return self.cards.pop()
         
@@ -358,8 +376,12 @@ class PokerHand:
     def straight_flush(cards):
         """
         Checks for the best straight flush in a list of cards (may be more than just 5)
+        
+        Args:
         :cards: A list of playing cards.
-        :return: None if no straight flush is found, else the value of the top card and the cards in hand
+        Returns:
+        :tuple: A Handtype for the pokerhand and a a tuple of the card thats a four of a kind and a
+        list of all the cards in the hand in falling order
         """
         
         values = [(x.get_value(), x.get_suit()) for x in cards] \
@@ -514,4 +536,3 @@ class PokerHand:
         """
         return HandType.high_Card, sorted(cards,reverse=True)
 
-PokerHand([])
