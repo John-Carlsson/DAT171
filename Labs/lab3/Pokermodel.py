@@ -49,7 +49,7 @@ class Money(QObject):
 
 
 class PlayerModel(QObject, Hand):
-    """Everything thats going to change within the game
+    """Everything thats going on regarding a player
     Args:
 
         :QObject: A QObject
@@ -85,7 +85,8 @@ class PlayerModel(QObject, Hand):
         super().drop_cards([x for x in range(len(self.cards))]) # drop all cards
         
         self.card_signal.emit()
-
+    
+    
 
 
 class TexasHoldEm(QObject):
@@ -199,6 +200,10 @@ class TexasHoldEm(QObject):
 
 
     def check_winner(self):
+        cards = self.table.cards
+        if self.active_player.best_poker_hand(cards) < self.not_active_player.best_poker_hand(cards):
+            print(self.active_player.name + ' wins' + ' with a ' + str(self.active_player.best_poker_hand(cards)))
+        else: print(self.not_active_player.name + ' wins' + ' with a ' + str(self.not_active_player.best_poker_hand(cards)))
         self.new_round()
 
 
