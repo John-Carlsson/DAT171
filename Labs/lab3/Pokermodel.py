@@ -190,6 +190,8 @@ class TexasHoldEm(QObject):
             self.table.add_card(self.deck.draw())
 
     def swap_player(self):
+        self.active_player.flip()
+        self.not_active_player.flip()
         if self.active_player == self.players[0]: 
                 self.active_player = self.players[1] 
                 self.not_active_player = self.players[0]
