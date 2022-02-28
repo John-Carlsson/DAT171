@@ -2,24 +2,22 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtSvg import *
 from PyQt5.QtWidgets import *
-import sys
 from Pokermodel import *
 
+class MoneyView(QLabel):
+    def __init__(self, prefix_text):
+        pass
 
 class GameView(QWidget):
     def __init__(self, game_model):
         super().__init__()
 
-        self.rubrik = QLabel('Players:', parent=self)
-        self.rubrik.setAlignment(Qt.AlignRight)
-        self.rubrik.setStyleSheet("QLabel {font-size:20px;}")
-        self.setLayoutDirection(1)
         
         # The init method for views should always be quite familiar; it has a section for creating widgets
         # buttons = [QPushButton(game_model.players[0]), QPushButton(game_model.players[1])]
         self.labels = dict()
-        for i in range(len(game_model.players)):
-            self.labels[game_model.players[i]] = QLabel(game_model.players[i].name +'\t\t'+ str(game_model.players[i].cash))
+        # for i in range(len(game_model.players)):
+        #     self.labels[game_model.players[i]] = QLabel(game_model.players[i].name +'\t\t'+ str(game_model.players[i].cash))
 
         self.labels['pot'] = QLabel('Total pot' +'\t' + str(game_model.money.pot))
         self.labels['last_bet'] = QLabel('Last bet placed' +'\t' + str(game_model.money.current_bet))
@@ -30,7 +28,10 @@ class GameView(QWidget):
         # vbox.setGeometry(QRect.bottomRight())
         for label in self.labels.values():
             vbox.addWidget(label)
-        
+
+        # for player in self.game.players:
+        #     pbox.addWidget(PlayerView(player))
+
         bet_button = QPushButton('Bet')
         bet_scale = QSpinBox()
         bet_scale.setMaximum(game_model.active_player.cash)
@@ -71,6 +72,7 @@ class GameView(QWidget):
         # and connecting some method for updating the state to the corresponding signals
         game_model.money.total_pot_signal.connect(self.update_pot)
         game_model.active_player.cash_signal.connect(self.update_cash)
+        game_model.not_active_player.cash_signal.connect(self.update_cash)
         game_model.money.current_bet_signal.connect(self.update_current_bet)
 
 
@@ -265,15 +267,15 @@ class TableView(QGraphicsView):
         super().resizeEvent(painter)
 
 class MainWindow(QWidget):
-    def __init__(self):
+    winner_signal = pyqtSignal()
+    def __init__(self, names = ['John', 'Derin']):
         super().__init__()
         self.box = QHBoxLayout() # Skapa stora rutan
-        self.game = TexasHoldEm(names=['John', 'Lucas']) # Skapa spelet
+        self.game = TexasHoldEm(names) # Skapa spelet
         game = self.game
         card_box = QVBoxLayout() # Skapa en vertical låda för bordet och spelarna
         player_box = QHBoxLayout() # Skapa en horizontel låda för att ha spelarnas kort i
         player_labels = QHBoxLayout() # En låda för namnen
-        turn_label = QHBoxLayout() # En låda för vems tur det är
         buttons = QVBoxLayout()    # Skapa en låda för knapparna
         table_box = QHBoxLayout()  # En låda för bordet
 
@@ -312,8 +314,8 @@ class MainWindow(QWidget):
         self.show()
 
 
-qt_app = QApplication(sys.argv)
-qt_app = QApplication.instance()
-main = MainWindow()
+        
 
-qt_app.exec_()
+
+
+

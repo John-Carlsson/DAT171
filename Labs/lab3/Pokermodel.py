@@ -1,4 +1,3 @@
-from unicodedata import name
 from PyQt5.QtCore import *
 from cardlib import *
 
@@ -63,6 +62,7 @@ class PlayerModel(QObject, Hand):
         self.hand = Hand()
         self.cash = cash
         self.name = name
+        self.played = False
         
         # Additional state needed by the UI
         self.flipped_cards = False
@@ -84,20 +84,22 @@ class PlayerModel(QObject, Hand):
         
         self.card_signal.emit()
     
+    def place_bet(self, amount):
+        self.cash -= amount
+        self.cash_signal.emit()
 
 class TexasHoldEm(QObject):
     
     
     winner = pyqtSignal((str,))
     
-    def __init__(self, names = ['John', 'Derin']):
+    def __init__(self, names):
         super().__init__() # Don't forget super init when inheriting!
         self.players = [PlayerModel(name) for name in names] # A list of PlayerModel objects
         self.money = Money(self.players) # keeping track of the money
         self.table = TableModel() # Keeping track of the table
         self.deck = StandardDeck()
         self.deck.shuffle()
-        self.passed = False
 
         for player in self.players: # Give players money and cards
             player.cash = 100
@@ -113,15 +115,14 @@ class TexasHoldEm(QObject):
 
     
 
-    def bet(self, amount): # INTE Klar, pallar inte fixa kolla minuskonto och shit
+    def bet(self, amount): 
         """ Place a bet with the Qspin thingy in the widget
 
         Args:
             :amount: An int chosen in the widget with the Qspin thingy
         """
         self.money.player_bets[self.active_player] += amount
-        self.active_player.cash -=  amount
-        self.active_player.cash_signal.emit()
+        self.active_player.place_bet(amount)
         self.money.current_bet =  amount
         self.money.current_bet_signal.emit()
         
@@ -135,6 +136,10 @@ class TexasHoldEm(QObject):
         self.not_active_player.cash = self.not_active_player.cash + self.money.pot
         self.not_active_player.cash_signal.emit()
 
+
+
+
+#        self.money.set(...)
         self.money.pot =  self.money.pot - self.money.pot
         self.money.total_pot_signal.emit()
         self.money.current_bet =  0
@@ -145,38 +150,48 @@ class TexasHoldEm(QObject):
         self.new_round()
              
     def call(self):
-        self.bet(self.money.player_bets[self.not_active_player] - self.money.player_bets[self.active_player])
+        amount = self.money.player_bets[self.not_active_player] - self.money.player_bets[self.active_player]
+        self.bet(amount)
         
         
 
     def end_turn(self): # This one does not quite work, needs to be refined
         """ Switching players or see if someone wins
         """
-    
+        self.active_player.played = True
         # check to see if both players have betted the same amount
-        if self.money.player_bets[self.active_player] == self.money.player_bets[self.not_active_player] and (len(self.table.cards) < 5):
+
+        if self.money.player_bets[self.active_player] == self.money.player_bets[self.not_active_player] and (len(self.table.cards) < 5) and \
+            (self.active_player.played == True and self.not_active_player.played == True):
             self.table.add_card(self.deck.draw())
+            self.active_player.played = False
+            self.not_active_player.played = False
+            self.swap_player()
+
+            
         
         # If all cards are on table and both players have betted the same amount, check who won
-        elif self.money.player_bets[self.active_player] == self.money.player_bets[self.not_active_player] and (len(self.table.cards) == 5):
+        elif self.money.player_bets[self.active_player] == self.money.player_bets[self.not_active_player] and (len(self.table.cards) == 5)  and \
+            (self.active_player.played == True and self.not_active_player.played == True):
             self.check_winner()
             return
 
-        if self.money.player_bets[self.active_player] >= self.money.player_bets[self.not_active_player] and (len(self.table.cards) == 5):
+        elif self.money.player_bets[self.active_player] >= self.money.player_bets[self.not_active_player]:
             self.swap_player()
-        else: 
-            self.active_player.flip()
-            self.not_active_player.flip()
-        self.passed = not self.passed
+
+        elif self.money.player_bets[self.active_player] < self.money.player_bets[self.not_active_player]:
+            return
+       
         
     def new_round(self):
         """ A method for resetting the game for a new round
         """
         self.deck = StandardDeck()
         self.deck.shuffle()
-        self.table.reset()  # Reset the deck
+        self.table.reset()  # Reset the board
         self.money.reset()
-        self.passed = False
+        self.active_player.played = False
+        self.not_active_player.played = False
         for player in self.players: # Drop all cards and hand out two new ones
             player.reset()
 
@@ -202,33 +217,41 @@ class TexasHoldEm(QObject):
 
     def check_winner(self):
         cards = self.table.cards
-        # Give money
+
+        # Give money if the round was equal
         if self.active_player.best_poker_hand(cards) == self.not_active_player.best_poker_hand(cards):
             self.not_active_player.cash = self.not_active_player.cash + self.money.pot/2
             self.not_active_player.cash_signal.emit()
             self.active_player.cash = self.active_player.cash + self.money.pot/2
             self.active_player.cash_signal.emit()
 
-        
-
-        # Print for fun
-        if self.active_player.best_poker_hand(cards) < self.not_active_player.best_poker_hand(cards):
-            self.not_active_player.cash = self.not_active_player.cash + self.money.pot
+        # If one of the player wins
+        elif self.active_player.best_poker_hand(cards) < self.not_active_player.best_poker_hand(cards):
+            self.not_active_player.cash += self.money.pot
             self.not_active_player.cash_signal.emit()
-            self.money.pot =  self.money.pot - self.money.pot
+            self.money.pot -=  self.money.pot
             self.money.total_pot_signal.emit()
             self.money.current_bet =  0
             self.money.current_bet_signal.emit()
+            # Istället för en print ska det vara en MSGbox som säger vem som bann rundan och hur mycket man vann
             print(self.active_player.name + ' wins' + ' with a ' + str(self.active_player.best_poker_hand(cards)))
 
+        # If the other player wins
         else:
-            self.active_player.cash = self.active_player.cash + self.money.pot
+            self.active_player.cash += self.money.pot
             self.active_player.cash_signal.emit() 
-            self.money.pot =  self.money.pot - self.money.pot
+            self.money.pot -= self.money.pot
             self.money.total_pot_signal.emit()
             self.money.current_bet =  0
             self.money.current_bet_signal.emit()
+            # Istället för en print ska det vara en MSGbox som säger vem som bann rundan och hur mycket man vann
             print(self.not_active_player.name + ' wins' + ' with a ' + str(self.not_active_player.best_poker_hand(cards)))
+
+        for player in self.players:
+            if player.cash == 0:
+                pass
+            # Här ska en ruta poppa upp med vem som vann hela spelet!
+                
         self.new_round()
 
 
