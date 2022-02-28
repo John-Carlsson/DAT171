@@ -220,9 +220,9 @@ class TexasHoldEm(QObject):
 
         # Give money if the round was equal
         if self.active_player.best_poker_hand(cards) == self.not_active_player.best_poker_hand(cards):
-            self.not_active_player.cash = self.not_active_player.cash + self.money.pot/2
+            self.not_active_player.cash += self.money.pot/2
             self.not_active_player.cash_signal.emit()
-            self.active_player.cash = self.active_player.cash + self.money.pot/2
+            self.active_player.cash += self.money.pot/2
             self.active_player.cash_signal.emit()
 
         # If one of the player wins

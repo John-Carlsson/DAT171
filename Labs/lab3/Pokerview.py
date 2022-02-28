@@ -2,6 +2,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtSvg import *
 from PyQt5.QtWidgets import *
+import sys
 from Pokermodel import *
 
 class MoneyView(QLabel):
@@ -12,12 +13,16 @@ class GameView(QWidget):
     def __init__(self, game_model):
         super().__init__()
 
+        self.rubrik = QLabel('Players:', parent=self)
+        self.rubrik.setAlignment(Qt.AlignRight)
+        self.rubrik.setStyleSheet("QLabel {font-size:20px;}")
+        self.setLayoutDirection(1)
         
         # The init method for views should always be quite familiar; it has a section for creating widgets
         # buttons = [QPushButton(game_model.players[0]), QPushButton(game_model.players[1])]
         self.labels = dict()
-        # for i in range(len(game_model.players)):
-        #     self.labels[game_model.players[i]] = QLabel(game_model.players[i].name +'\t\t'+ str(game_model.players[i].cash))
+        for i in range(len(game_model.players)):
+            self.labels[game_model.players[i]] = QLabel(game_model.players[i].name +'\t\t'+ str(game_model.players[i].cash))
 
         self.labels['pot'] = QLabel('Total pot' +'\t' + str(game_model.money.pot))
         self.labels['last_bet'] = QLabel('Last bet placed' +'\t' + str(game_model.money.current_bet))
