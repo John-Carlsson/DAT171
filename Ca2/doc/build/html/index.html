@@ -42,20 +42,6 @@
 <dd><p>Bases: <a class="reference internal" href="#cardlib.PlayingCard" title="cardlib.PlayingCard"><code class="xref py py-class docutils literal notranslate"><span class="pre">cardlib.PlayingCard</span></code></a></p>
 <p>A class for the aces in deck of cards, value is set at 14, since Aces are normaly seen as the most valuable card.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="cardlib.AceCard.get_suit">
-<span class="sig-name descname"><span class="pre">get_suit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.AceCard.get_suit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the suit of the card</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><dl class="field-list simple">
-<dt class="field-odd">Suit</dt>
-<dd class="field-odd"><p>An iterable Suit object with int.IntEnum as parent class</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="cardlib.AceCard.get_value">
 <span class="sig-name descname"><span class="pre">get_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.AceCard.get_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the value of the card.</p>
@@ -79,7 +65,15 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="cardlib.Hand.add_card">
 <span class="sig-name descname"><span class="pre">add_card</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">card</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.Hand.add_card" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add cards to hand</p>
+<dd><p>A method for adding a card to the hand</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">card</dt>
+<dd class="field-odd"><p>A card from the standard deck</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -105,7 +99,21 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="cardlib.Hand.drop_cards">
 <span class="sig-name descname"><span class="pre">drop_cards</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.Hand.drop_cards" title="Permalink to this definition">¶</a></dt>
-<dd><p>Drop one or several cards by index</p>
+<dd><p>A method for dropping one or several cards by index</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">index</dt>
+<dd class="field-odd"><p>A list of the indexs to be dropped from the hand</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">Exception</dt>
+<dd class="field-odd"><p>If the hand has too few cards, raise an Exception</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -129,14 +137,6 @@
 <dd><p>Bases: <a class="reference internal" href="#cardlib.PlayingCard" title="cardlib.PlayingCard"><code class="xref py py-class docutils literal notranslate"><span class="pre">cardlib.PlayingCard</span></code></a></p>
 <p>A class for the jacks in a deck of cards</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="cardlib.JackCard.get_suit">
-<span class="sig-name descname"><span class="pre">get_suit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.JackCard.get_suit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the suit of the card
-Returns:
-:Suit: An iterable Suit object with int.IntEnum as parent class</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="cardlib.JackCard.get_value">
 <span class="sig-name descname"><span class="pre">get_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.JackCard.get_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the value of the card.
@@ -152,14 +152,6 @@ Returns:
 <dd><p>Bases: <a class="reference internal" href="#cardlib.PlayingCard" title="cardlib.PlayingCard"><code class="xref py py-class docutils literal notranslate"><span class="pre">cardlib.PlayingCard</span></code></a></p>
 <p>A class for the kings in a deck of cards</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="cardlib.KingCard.get_suit">
-<span class="sig-name descname"><span class="pre">get_suit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.KingCard.get_suit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the suit of the card
-Returns:
-:Suit: An iterable Suit object with int.IntEnum as parent class</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="cardlib.KingCard.get_value">
 <span class="sig-name descname"><span class="pre">get_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.KingCard.get_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the value of the card.
@@ -174,20 +166,6 @@ Returns:
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cardlib.</span></span><span class="sig-name descname"><span class="pre">NumberedCard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.NumberedCard" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#cardlib.PlayingCard" title="cardlib.PlayingCard"><code class="xref py py-class docutils literal notranslate"><span class="pre">cardlib.PlayingCard</span></code></a></p>
 <p>A class for the numbered playingcards in a deck of cards, value can be between 2 and 10</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="cardlib.NumberedCard.get_suit">
-<span class="sig-name descname"><span class="pre">get_suit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.NumberedCard.get_suit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the suit of the card as a suit object of an IntEnum</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><dl class="field-list simple">
-<dt class="field-odd">Suit</dt>
-<dd class="field-odd"><p>An iterable Suit object with int.IntEnum as parent class</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="cardlib.NumberedCard.get_value">
 <span class="sig-name descname"><span class="pre">get_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.NumberedCard.get_value" title="Permalink to this definition">¶</a></dt>
@@ -213,8 +191,9 @@ Returns:
 :metaclass:  Defaults to ABCMeta.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="cardlib.PlayingCard.get_suit">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_suit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.PlayingCard.get_suit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the suit of the card</p>
+<span class="sig-name descname"><span class="pre">get_suit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.PlayingCard.get_suit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the suit of the card Returns:
+:Suit: An iterable Suit object with int.IntEnum as parent class</p>
 </dd></dl>
 
 <dl class="py method">
@@ -230,14 +209,6 @@ Returns:
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cardlib.</span></span><span class="sig-name descname"><span class="pre">QueenCard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.QueenCard" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#cardlib.PlayingCard" title="cardlib.PlayingCard"><code class="xref py py-class docutils literal notranslate"><span class="pre">cardlib.PlayingCard</span></code></a></p>
 <p>A class for the queens in a deck of cards</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="cardlib.QueenCard.get_suit">
-<span class="sig-name descname"><span class="pre">get_suit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.QueenCard.get_suit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the suit of the card
-Returns:
-:Suit: An iterable Suit object with int.IntEnum as parent class</p>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="cardlib.QueenCard.get_value">
 <span class="sig-name descname"><span class="pre">get_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.QueenCard.get_value" title="Permalink to this definition">¶</a></dt>
@@ -257,6 +228,20 @@ Returns:
 <dt class="sig sig-object py" id="cardlib.StandardDeck.draw">
 <span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.StandardDeck.draw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw the top card from the deck</p>
+<dl class="simple">
+<dt>Raises:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">Exception</dt>
+<dd class="field-odd"><p>If there are no cards left in the deck, raise an Exception</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">PlayingCard</dt>
+<dd class="field-odd"><p>A playingcard from the deck</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -280,112 +265,6 @@ Returns:
 </dl>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cardlib.flush">
-<span class="sig-prename descclassname"><span class="pre">cardlib.</span></span><span class="sig-name descname"><span class="pre">flush</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cards</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.flush" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function checking if a flush can be made with the given cards
-Args:
-:cards: A list of PlayingCard objects</p>
-<p>Returns:
-:tuple: A Handtype for the pokerhand and a
-list of the cards making up the flush in falling order</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cardlib.four_of_a_kind">
-<span class="sig-prename descclassname"><span class="pre">cardlib.</span></span><span class="sig-name descname"><span class="pre">four_of_a_kind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cards</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.four_of_a_kind" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function checking if a four of kind can be made with the given cards</p>
-<p>Args:
-:cards: A list of PlayingCard objects
-Returns:
-:tuple: A Handtype for the pokerhand and a a tuple of the card thats a four of a kind and a
-list of all the cards in the hand in falling order</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cardlib.full_house">
-<span class="sig-prename descclassname"><span class="pre">cardlib.</span></span><span class="sig-name descname"><span class="pre">full_house</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cards</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.full_house" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function checking if a full house can be made with the given cards</p>
-<p>Args:
-:cards: A list of PlayingCard objects</p>
-<p>Returns:
-:tuple: A Handtype for the pokerhand and a a tuple of the cards that make up the full house and a
-list of all the cards in the hand in falling order</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cardlib.high_card">
-<span class="sig-prename descclassname"><span class="pre">cardlib.</span></span><span class="sig-name descname"><span class="pre">high_card</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cards</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.high_card" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function checking if a pair can be made with the given cards
-Args:
-:cards: A list of PlayingCard objects
-Returns:
-:tuple: A Handtype for the pokerhand  and a
-list of all the cards in the hand in falling order</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cardlib.pair">
-<span class="sig-prename descclassname"><span class="pre">cardlib.</span></span><span class="sig-name descname"><span class="pre">pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cards</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.pair" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function checking if a pair can be made with the given cards
-Args:
-:param cards: A list of PlayingCard objects
-Returns:
-:HandType:, :tuple: A Handtype for the pokerhand and a tuple of the value of the pair and a
-list of all the cards in the hand in falling order</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cardlib.royal_flush">
-<span class="sig-prename descclassname"><span class="pre">cardlib.</span></span><span class="sig-name descname"><span class="pre">royal_flush</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cards</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.royal_flush" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function for checking if a Royal flush can be created with the cards given</p>
-<p>Args:
-:param cards: A list of PlayingCard objects</p>
-<p>Returns:
-:HandType:, :list: a HandType object and a list of cards</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cardlib.straight">
-<span class="sig-prename descclassname"><span class="pre">cardlib.</span></span><span class="sig-name descname"><span class="pre">straight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cards</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.straight" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function checking if a straight can be made with the given cards
-Args:
-:cards: A list of PlayingCard objects</p>
-<p>Returns:
-:tuple: A Handtype for the pokerhand and a
-list of all the cards in the hand in falling order</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cardlib.straight_flush">
-<span class="sig-prename descclassname"><span class="pre">cardlib.</span></span><span class="sig-name descname"><span class="pre">straight_flush</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cards</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.straight_flush" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks for the best straight flush in a list of cards (may be more than just 5)
-:cards: A list of playing cards.
-:return: None if no straight flush is found, else the value of the top card and the cards in hand</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cardlib.three_of_a_kind">
-<span class="sig-prename descclassname"><span class="pre">cardlib.</span></span><span class="sig-name descname"><span class="pre">three_of_a_kind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cards</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.three_of_a_kind" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function checking if three of a kind can be made with the given cards
-Args:
-:cards: A list of PlayingCard objects</p>
-<p>Returns:
-:tuple: A Handtype for the pokerhand and a a tuple of the value fpr the three of a kind and a
-list of all the cards in the hand in falling order</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cardlib.two_pairs">
-<span class="sig-prename descclassname"><span class="pre">cardlib.</span></span><span class="sig-name descname"><span class="pre">two_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cards</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.two_pairs" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function checking if two pairs can be made with the given cards
-Args
-:cards: A list of PlayingCard objects
-Return:
-:tuple: A Handtype for the pokerhand and a tuple of the value of the pairs and a
-list of all the cards in the hand in falling order</p>
 </dd></dl>
 
 </section>
