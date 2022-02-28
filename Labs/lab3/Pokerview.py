@@ -3,7 +3,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtSvg import *
 from PyQt5.QtWidgets import *
 import sys
-
 from Pokermodel import *
 
 
@@ -23,7 +22,8 @@ class GameView(QWidget):
             self.labels[game_model.players[i]] = QLabel(game_model.players[i].name +'\t\t'+ str(game_model.players[i].cash))
 
         self.labels['pot'] = QLabel('Total pot' +'\t' + str(game_model.money.pot))
-        self.labels['current_bet'] = QLabel('Current bet' +'\t' + str(game_model.money.current_bet))
+        self.labels['last_bet'] = QLabel('Last bet placed' +'\t' + str(game_model.money.current_bet))
+
         
         # then arranging them in the desired layout
         vbox = QVBoxLayout()
@@ -88,7 +88,7 @@ class GameView(QWidget):
         self.labels[self.game.not_active_player].setText(str(self.game.not_active_player.name) +'\t\t' + str(self.game.not_active_player.cash))
        
     def update_current_bet(self):
-        self.labels['current_bet'].setText('Current bet' +'\t' + str(self.game.money.current_bet))
+        self.labels['last_bet'].setText('last bet placed' +'\t' + str(self.game.money.current_bet))
     
    
     hbox = QHBoxLayout()
@@ -194,8 +194,7 @@ class PlayerView(QGraphicsView):
         # QGraphicsView automatically re-paints everything when we modify the scene.
         self.update_view()
         super().resizeEvent(painter)
-
-
+        
 
 class TableView(QGraphicsView): 
     """ A View widget that represents the table area displaying a players cards. """
@@ -269,28 +268,43 @@ class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.box = QHBoxLayout() # Skapa stora rutan
-        self.game = TexasHoldEm() # Skapa spelet
+        self.game = TexasHoldEm(names=['John', 'Lucas']) # Skapa spelet
         game = self.game
         card_box = QVBoxLayout() # Skapa en vertical låda för bordet och spelarna
         player_box = QHBoxLayout() # Skapa en horizontel låda för att ha spelarnas kort i
+        player_labels = QHBoxLayout() # En låda för namnen
+        turn_label = QHBoxLayout() # En låda för vems tur det är
         buttons = QVBoxLayout()    # Skapa en låda för knapparna
         table_box = QHBoxLayout()  # En låda för bordet
+
 
         # Add the table at the top
         table = TableView(game.table)
         table_box.addWidget(table)
         card_box.addLayout(table_box)
 
+        
         # Ad the players under the table
         for player in game.players:    # Lägg till spelarna i rutan
+            # Player cards
             playerview = PlayerView(player)
             player_box.addWidget(playerview)
+
+            # Player names
+            label = QLabel(player.name)
+            label.setAlignment(Qt.AlignCenter)
+            label.setFont(QFont('Times', 20))
+            player_labels.addWidget(label)
+
+        # Add the names and their cards
+        card_box.addLayout(player_labels)
         card_box.addLayout(player_box) 
+        
 
         # Add the box with the table and players to the big box
         self.box.addLayout(card_box)
 
-        # Ad the buttons
+        # Add the buttons
         buttons.addWidget(GameView(game))
         self.box.addLayout(buttons)
 
