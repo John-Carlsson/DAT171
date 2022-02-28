@@ -120,26 +120,24 @@ def test_deck_further():
     """ Further testing the deck and its methods"""
     deck = StandardDeck()
     deck2 = StandardDeck()
-    assert (deck.deck == deck2.deck) and len(deck.deck) == len(deck2.deck) # Check so that two decks are the same when created
+    assert (deck.cards == deck2.cards) and len(deck.cards) == len(deck2.cards) # Check so that two decks are the same when created
 
     deck.shuffle()
-    assert deck.deck != deck2.deck # Check so that the shuffle function works
-    for i in deck.deck:
-        assert i in deck2.deck # Check so all cards are in the deck 
+    assert deck.cards != deck2.cards # Check so that the shuffle function works
+    for i in deck.cards:
+        assert i in deck2.cards # Check so all cards are in the deck 
 
     p1 = Hand()
     for i in range(10):
         p1.add_card(deck.draw())
 
-    assert len(deck.deck) < len(deck2.deck) # Check so that cards are drawn
+    assert len(deck.cards) < len(deck2.cards) # Check so that cards are drawn
     for card in p1.cards:
-        assert card not in deck.deck # Check so that drawn cards are not in the deck anymore
+        assert card not in deck.cards # Check so that drawn cards are not in the deck anymore
 
-    assert len(deck.deck) == (52-10) # Check so that the correct number of cards are drawn
+    assert len(deck.cards) == (52-10) # Check so that the correct number of cards are drawn
 
-    for i in range(42):
-        deck.draw()
-    assert deck.draw() == 'inga kort kvar' # Check so that when no cards are left it returns something else
+    
 
 
 # This test builds on the assumptions above and assumes you store the cards in the hand in the list "cards",
@@ -263,59 +261,22 @@ def test_same_pokerhands():
     table.add_card(NumberedCard(4,Suit.Clubs))
     assert p1.best_poker_hand(cards = table.cards) > p2.best_poker_hand(cards = table.cards)
 
-    p1.drop_cards([0])
-    p2.drop_cards([0])
-    p1.add_card(NumberedCard(4,Suit.Hearts))
-    p2.add_card(NumberedCard(4,Suit.Diamonds))
-
-    table.add_card(KingCard(Suit.Spades))
-    table.add_card(NumberedCard(4,Suit.Spades))
-    table.add_card(NumberedCard(4,Suit.Clubs))
-
-    p1 = Hand()
-    p2 = Hand()
-    table = Hand()
-    p1.add_card(NumberedCard(4,Suit.Hearts))
-    p1.add_card(NumberedCard(2,Suit.Hearts))
-    p2.add_card(NumberedCard(4,Suit.Diamonds))
-    p2.add_card(NumberedCard(2,Suit.Diamonds))
-    table.add_card(NumberedCard(4,Suit.Spades))
-    table.add_card(NumberedCard(4,Suit.Clubs))
-    table.add_card(NumberedCard(2,Suit.Clubs))
-    assert p2.best_poker_hand(table.cards) > p1.best_poker_hand(table.cards) # Chekc so that two full houses with the exact same values check for suit
     
-    p1 = Hand()
-    p2 = Hand()
-    table = Hand()
-    table.add_card(NumberedCard(2,Suit.Diamonds))
-    table.add_card(NumberedCard(7,Suit.Diamonds))
-    table.add_card(NumberedCard(8,Suit.Diamonds))
-    table.add_card(NumberedCard(3,Suit.Diamonds))
-    p1.add_card(JackCard(Suit.Diamonds))
-    p1.add_card(NumberedCard(10,Suit.Spades))
-    p2.add_card(NumberedCard(3,Suit.Diamonds))
-    p2.add_card(KingCard(Suit.Spades))
-    # Here player 1 has a flush with his highest card of the suit being a Jack,
-    # player 2 has a flush with the highest vard of the suit being a 8 on table but has a king on hand
-    # Here i take in to account that the highest card in the flush determines who win and not highest card over all.
-    assert p1.best_poker_hand(table.cards) > p2.best_poker_hand(table.cards)
-
     p3 = Hand()
     p4 = Hand()
-    table.drop_cards([0,1,2,3,4])
     table = Hand()
     p3.add_card(NumberedCard(2,Suit.Diamonds))
     p3.add_card(NumberedCard(6,Suit.Hearts))
+
     p4.add_card(NumberedCard(2,Suit.Spades))
     p4.add_card(NumberedCard(6,Suit.Diamonds))
+    
     table.add_card(NumberedCard(3,Suit.Diamonds))
     table.add_card(NumberedCard(4,Suit.Hearts))
     table.add_card(NumberedCard(5,Suit.Spades))
     table.add_card(NumberedCard(9,Suit.Diamonds))
-    print(p4.cards < p3.cards)
     p3.sort()
     p4.sort()
-    print(p4.cards < p3.cards)
-    print(p4, p3)
+    # check so that if two hands are of the same cardvalues, check for the suit
     assert p4.best_poker_hand(table.cards) > p3.best_poker_hand(table.cards)
 
