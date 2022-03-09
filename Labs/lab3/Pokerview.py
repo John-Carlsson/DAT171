@@ -5,37 +5,19 @@ from PyQt5.QtWidgets import *
 import sys
 from Pokermodel import *
 
-class MoneyView(QLabel):
-    def __init__(self, prefix_text):
-        pass
 
 class GameView(QWidget):
     def __init__(self, game_model):
         super().__init__()
 
-        self.rubrik = QLabel('Players:', parent=self)
-        self.rubrik.setAlignment(Qt.AlignRight)
-        self.rubrik.setStyleSheet("QLabel {font-size:20px;}")
-        self.setLayoutDirection(1)
-        
-        # The init method for views should always be quite familiar; it has a section for creating widgets
-        # buttons = [QPushButton(game_model.players[0]), QPushButton(game_model.players[1])]
         self.labels = dict()
-        for i in range(len(game_model.players)):
-            self.labels[game_model.players[i]] = QLabel(game_model.players[i].name +'\t\t'+ str(game_model.players[i].cash))
+        self.labels['pot'] = QLabel('Total pot: ' + str(game_model.money.pot) + " $")
+        self.labels['last_bet'] = QLabel('Last bet placed: ' + str(game_model.money.current_bet) + " $")
 
-        self.labels['pot'] = QLabel('Total pot' +'\t' + str(game_model.money.pot))
-        self.labels['last_bet'] = QLabel('Last bet placed' +'\t' + str(game_model.money.current_bet))
-
-        
         # then arranging them in the desired layout
         vbox = QVBoxLayout()
-        # vbox.setGeometry(QRect.bottomRight())
         for label in self.labels.values():
             vbox.addWidget(label)
-
-        # for player in self.game.players:
-        #     pbox.addWidget(PlayerView(player))
 
         bet_button = QPushButton('Bet')
         bet_scale = QSpinBox()
@@ -49,10 +31,11 @@ class GameView(QWidget):
             vbox.addWidget(button)
 
         self.setLayout(vbox)
+
         def bet_click():
             game_model.bet(bet_scale.value())
             end_turn_click()
-        
+
         def fold_click():
             bet_scale.setValue(0)
             game_model.fold()
@@ -70,39 +53,25 @@ class GameView(QWidget):
         fold_button.clicked.connect(fold_click)
         call_button.clicked.connect(call_click)
         end_turn_button.clicked.connect(end_turn_click)
-        
-        
+
         # almost always storing a reference to the related model
-        self.game = game_model    
+        self.game = game_model
         # and connecting some method for updating the state to the corresponding signals
         game_model.money.total_pot_signal.connect(self.update_pot)
-        game_model.active_player.cash_signal.connect(self.update_cash)
-        game_model.not_active_player.cash_signal.connect(self.update_cash)
         game_model.money.current_bet_signal.connect(self.update_current_bet)
 
-
-        # game_model.winner.connect(self.alert_winner)
-        # and giving it an initial update so that we show the initial state
-        # self.update_labels()
-       
-      
-        
     def update_pot(self):
-        self.labels['pot'].setText('Total pot' +'\t' + str(self.game.money.pot))
-    
-    def update_cash(self):
-        self.labels[self.game.active_player].setText(str(self.game.active_player.name) +'\t\t' + str(self.game.active_player.cash))
-        self.labels[self.game.not_active_player].setText(str(self.game.not_active_player.name) +'\t\t' + str(self.game.not_active_player.cash))
-       
+        self.labels['pot'].setText('Total pot: ' + str(self.game.money.pot) + " $")
+
     def update_current_bet(self):
-        self.labels['last_bet'].setText('last bet placed' +'\t' + str(self.game.money.current_bet))
-    
-   
+        self.labels['last_bet'].setText('Last bet placed: ' + str(self.game.money.current_bet) + " $")
+
     hbox = QHBoxLayout()
 
 
 class TableScene(QGraphicsScene):
     """ A scene with a table cloth background """
+
     def __init__(self):
         super().__init__()
         self.tile = QPixmap('cards/table.png')
@@ -111,6 +80,7 @@ class TableScene(QGraphicsScene):
 
 class CardItem(QGraphicsSvgItem):
     """ A simple overloaded QGraphicsSvgItem that also stores the card position """
+
     def __init__(self, renderer, position):
         super().__init__()
         self.setSharedRenderer(renderer)
@@ -131,13 +101,12 @@ def read_cards():
     return all_cards
 
 
-class PlayerView(QGraphicsView): 
+class PlayerView(QGraphicsView):
     """ A View widget that represents the table area displaying a players cards. """
 
     # We read all the card graphics as static class variables
     back_card = QSvgRenderer('cards/Red_Back_2.svg')
     all_cards = read_cards()
-    
 
     def __init__(self, card_model: PlayerModel, card_spacing: int = 150, padding: int = 10):
         """
@@ -151,7 +120,7 @@ class PlayerView(QGraphicsView):
 
         self.card_spacing = card_spacing
         self.padding = padding
-
+        self.score_labels = QHBoxLayout()
         self.model = card_model
         # Whenever the this window should update, it should call the "change_cards" method.
         # This can, for example, be done by connecting it to a signal.
@@ -162,6 +131,20 @@ class PlayerView(QGraphicsView):
 
         # Add the cards the first time around to represent the initial state.
         self.change_cards()
+
+        self.labels = dict()
+        self.labels[self.model] = QLabel("Money: " + str(self.model.cash) + " $")
+
+        # then arranging them in the desired layout
+        vbox = QVBoxLayout()
+        for label in self.labels.values():
+            label.setAlignment(Qt.AlignRight)
+            label.setFont(QFont('Times', 20))
+            vbox.addWidget(label)
+
+        self.model.cash_signal.connect(self.update_cash)
+
+        self.setLayout(vbox)
 
     def change_cards(self):
         # Add the cards from scratch
@@ -187,13 +170,16 @@ class PlayerView(QGraphicsView):
 
         self.update_view()
 
+    def update_cash(self):
+        self.labels[self.model].setText("Money: " + str(self.model.cash) + " $")
+
     def update_view(self):
-        scale = (self.viewport().height()-2*self.padding)/313
+        scale = (self.viewport().height() - 2 * self.padding) / 313
         self.resetTransform()
         self.scale(scale, scale)
         # Put the scene bounding box
-        self.setSceneRect(-self.padding//scale, -self.padding//scale,
-                          self.viewport().width()//scale, self.viewport().height()//scale)
+        self.setSceneRect(-self.padding // scale, -self.padding // scale,
+                          self.viewport().width() // scale, self.viewport().height() // scale)
 
     def resizeEvent(self, painter):
         # This method is called when the window is resized.
@@ -201,15 +187,14 @@ class PlayerView(QGraphicsView):
         # QGraphicsView automatically re-paints everything when we modify the scene.
         self.update_view()
         super().resizeEvent(painter)
-        
 
-class TableView(QGraphicsView): 
+
+class TableView(QGraphicsView):
     """ A View widget that represents the table area displaying a players cards. """
 
     # We read all the card graphics as static class variables
     back_card = QSvgRenderer('cards/Red_Back_2.svg')
     all_cards = read_cards()
-    
 
     def __init__(self, card_model: TableModel, card_spacing: int = 150, padding: int = 10):
         """
@@ -257,42 +242,42 @@ class TableView(QGraphicsView):
         self.update_view()
 
     def update_view(self):
-        scale = (self.viewport().height()-2*self.padding)/313
+        scale = (self.viewport().height() - 2 * self.padding) / 313
         self.resetTransform()
         self.scale(scale, scale)
         # Put the scene bounding box
-        self.setSceneRect(-self.padding//scale, -self.padding//scale,
-                          self.viewport().width()//scale, self.viewport().height()//scale)
+        self.setSceneRect(-self.padding // scale, -self.padding // scale,
+                          self.viewport().width() // scale, self.viewport().height() // scale)
 
     def resizeEvent(self, painter):
         # This method is called when the window is resized.
-        # If the widget is resize, we gotta adjust the card sizes.
+        # If the widget is resize, we got to adjust the card sizes.
         # QGraphicsView automatically re-paints everything when we modify the scene.
         self.update_view()
         super().resizeEvent(painter)
 
+
 class MainWindow(QWidget):
     winner_signal = pyqtSignal()
-    def __init__(self, names = ['John', 'Derin']):
-        super().__init__()
-        self.box = QHBoxLayout() # Skapa stora rutan
-        self.game = TexasHoldEm(names) # Skapa spelet
-        game = self.game
-        card_box = QVBoxLayout() # Skapa en vertical låda för bordet och spelarna
-        player_box = QHBoxLayout() # Skapa en horizontel låda för att ha spelarnas kort i
-        player_labels = QHBoxLayout() # En låda för namnen
-        buttons = QVBoxLayout()    # Skapa en låda för knapparna
-        table_box = QHBoxLayout()  # En låda för bordet
 
+    def __init__(self, names=['John', 'Derin']):
+        super().__init__()
+        self.box = QHBoxLayout()        # Create large box
+        self.game = TexasHoldEm(names)  # Create game
+        game = self.game
+        card_box = QVBoxLayout()        # Vertical box for table and player information
+        player_box = QHBoxLayout()      # Horizontal box for player's cards
+        player_labels = QHBoxLayout()   # Box for names
+        buttons = QVBoxLayout()         # Box for buttons
+        table_box = QHBoxLayout()       # Box for table
 
         # Add the table at the top
         table = TableView(game.table)
         table_box.addWidget(table)
         card_box.addLayout(table_box)
 
-        
-        # Ad the players under the table
-        for player in game.players:    # Lägg till spelarna i rutan
+        # Add the players under the table
+        for player in game.players:
             # Player cards
             playerview = PlayerView(player)
             player_box.addWidget(playerview)
@@ -305,8 +290,7 @@ class MainWindow(QWidget):
 
         # Add the names and their cards
         card_box.addLayout(player_labels)
-        card_box.addLayout(player_box) 
-        
+        card_box.addLayout(player_box)
 
         # Add the box with the table and players to the big box
         self.box.addLayout(card_box)
@@ -317,10 +301,4 @@ class MainWindow(QWidget):
 
         self.setLayout(self.box)
         self.show()
-
-
-        
-
-
-
 
